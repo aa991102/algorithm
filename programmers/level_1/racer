@@ -65,7 +65,36 @@ mislav는 참여자 명단에는 두 명이 있지만, 완주자 명단에는 �
 */
 
 // 풀이 1. 배열 정렬 후 순서대로 비교
-import java.util.*; class Solution { public String solution(String[] participant, String[] completion) { String answer = ""; Arrays.sort(participant); Arrays.sort(completion); int i; for(i = 0; i < completion.length; i++){ if(!participant[i].equals(completion[i])){ return participant[i]; } } return participant[i]; } }
+import java.util.*; 
+class Solution {
+public String solution(String[] participant, String[] completion) {
+String answer = "";
+Arrays.sort(participant); 
+Arrays.sort(completion); 
+int i; 
+for(i = 0; i < completion.length; i++){ 
+if(!participant[i].equals(completion[i])){ 
+return participant[i]; } 
+} 
+return participant[i]; 
+} 
+}
+
 
 // 풀이 2. Map 이용
-import java.util.*; class Solution { public String solution(String[] participant, String[] completion) { Map<String, Integer> hash = new HashMap<>(); for (String arg : participant){ hash.put(arg, hash.getOrDefault(arg, 0) + 1); } for (String arg : completion){ hash.put(arg, hash.get(arg) - 1); } for (String key : hash.keySet()) { if (hash.get(key) != 0){ return key; } } return null; } }
+import java.util.*; 
+class Solution { 
+public String solution(String[] participant, String[] completion) { 
+Map<String, Integer> hash = new HashMap<>(); 
+for (String arg : participant){ 
+hash.put(arg, hash.getOrDefault(arg, 0) + 1); } 
+for (String arg : completion){ 
+hash.put(arg, hash.get(arg) - 1); } 
+for (String key : hash.keySet()) { 
+if (hash.get(key) != 0){ 
+return key; 
+} 
+} 
+return null; 
+} 
+}
