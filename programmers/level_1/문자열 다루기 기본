@@ -1,0 +1,79 @@
+문제 설명
+
+문자열 s의 길이가 4 혹은 6이고, 숫자로만 구성돼있는지 확인해주는 함수, solution을 완성하세요. 예를 들어 s가 a234이면 False를 리턴하고 1234라면 True를 리턴하면 됩니다.
+
+​
+
+제한 사항
+
+s는 길이 1 이상, 길이 8 이하인 문자열입니다.
+
+​
+
+입출력 예
+
+s
+
+return
+
+a234
+
+false
+
+1234
+
+true
+
+
+
+
+
+내 풀이1 <배열 이용>
+
+import java.util.Arrays; class Solution { public boolean solution(String s){ boolean answer = true; if(s.length()==4 || s.length()==6){ char[] charArr = s.toCharArray(); for (int i=0;i<charArr.length;i++){ if (charArr[i] >= '0' && charArr[i] <='9'){ continue; }else{ answer = false; break; } } }else{ answer = false; } return answer; } }
+
+​
+
+내 풀이2 < 정규표현식 이용 >
+
+import java.util.regex.Pattern; class Solution { public boolean solution(String s) { boolean answer = false; if(s.length()==4 || s.length()==6){ String regExp = "^[0-9]*$"; //정큐식 패턴 생성 answer = Pattern.matches(regExp,s); } return answer; } }
+
+자바로 정규식을 사용하고 싶은 경우에는 java.util.regex 를 사용 사용해야 합니다. java.util.regex.Pattern 클래스에는 정규식에 관한 상세한 설명이 기술되어 있습니다. POSIX 문자 클래스 (US-ASCII) 문법..
+ponyozzang.tistory.com
+
+배열을 활용한 것과 다르게 이번엔 정규표현식을 이용해봤다! 
+배열과 정규식 두 방식을 비교해봤을 때,
+정규표현식이 보기에도 좋고, 시간도 덜 걸린다는 것을 알 수 있었다!
+배열 이용한 코드는 평균 0.22ms
+정규식 이용한 코드는 평균 0.148ms
+
+​
+
+​
+
+다른 사람 풀이1
+
+코딩테스트 연습 / 연습문제 / 문자열 다루기 기본 / 다른 사람의 풀이 / - , JegalJisu , 전은광 , - , - 외 51 명
+
+class Solution { public boolean solution(String s) { if(s.length() == 4 || s.length() == 6){ try{ int x = Integer.parseInt(s); return true; } catch(NumberFormatException e){ return false; } } else return false; } }
+
+이건 입력받은 문자열(s)을 숫자(int)로 형변환하려고 했을때, 
+
+숫자가 아닌 것이 섞여있는 경우 NumberFormatException(오류)이 발생하는 것을 이용한 코드다!
+
+​
+
+​
+
+다른사람풀이2
+
+코딩테스트 연습 / 연습문제 / 문자열 다루기 기본 / 다른 사람의 풀이 / - , - , grapefruit871 , 정기혁 , Wallaby_K 외 1 명
+
+import java.util.*; class Solution { public boolean solution(String s) { if (s.length() == 4 || s.length() == 6) return s.matches("(^[0-9]*$)"); return false; } }
+
+String객체에도 matches() 함수를 이용해서 정규식을 이용할 수 있었다!
+
+또 이 풀이에 대한 댓글에서 알려주신 건데, 문자열의 길이도 정규표현식으로 정할 수 있다고 함!!!
+
+"^[0-9]{4}|{6}$"
+
