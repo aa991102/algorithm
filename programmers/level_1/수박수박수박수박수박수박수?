@@ -1,0 +1,59 @@
+문제 설명
+
+길이가 n이고, 수박수박수박수....와 같은 패턴을 유지하는 문자열을 리턴하는 함수, solution을 완성하세요. 예를들어 n이 4이면 수박수박을 리턴하고 3이라면 수박수를 리턴하면 됩니다.
+
+​
+
+제한 조건
+
+n은 길이 10,000이하인 자연수입니다.
+
+​
+
+입출력 예
+
+n
+
+return
+
+3
+
+수박수
+
+4
+
+수박수박
+
+
+
+
+
+내 풀이
+
+class Solution { public String solution(int n) { String answer = ""; if(n==1){ answer = "수"; }else{ for(int i=0;i<n/2;i++){ answer += "수박"; } if(n%2!=0){ answer += "수"; } } return answer; } }
+
+시간은 1~27ms정도 걸린다.
+
+​
+
+​
+
+다른 사람 풀이1
+
+코딩테스트 연습 / 연습문제 / 수박수박수박수박수박수? / 다른 사람의 풀이 / - , 장봉기 , - , 장재진 , - 외 2 명
+
+class Solution { public String solution(int n) { return new String(new char [n/2+1]).replace("\0", "수박").substring(0,n); } }
+
+1) char배열을 n/2 +1 크기만큼 만들고
+
+2) 이 배열을 String객체 생성자를 이용해 String으로 생성
+
+3) 빈 char배열이 생성되면 \0 으로 먼저 생성되는 것을 이용해
+
+이 자리에 replace함수를 이용해 "\0" 대신 "수박"으로 바꿔준 후
+
+4) substring함수를 이용해 n자리수만큼 자르기
+
+
+보기에도 간단하고 시간도 거의 0~1ms밖에 안걸린다
+
