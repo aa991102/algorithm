@@ -1,0 +1,70 @@
+문제 설명
+
+문자열 s를 숫자로 변환한 결과를 반환하는 함수, solution을 완성하세요.
+
+​
+
+제한 조건
+
+s의 길이는 1 이상 5이하입니다.
+
+s의 맨앞에는 부호(+, -)가 올 수 있습니다.
+
+s는 부호와 숫자로만 이루어져있습니다.
+
+s는 0으로 시작하지 않습니다.
+
+​
+
+입출력 예
+
+예를들어 str이 1234이면 1234를 반환하고, -1234이면 -1234를 반환하면 됩니다.
+
+str은 부호(+,-)와 숫자로만 구성되어 있고, 잘못된 값이 입력되는 경우는 없습니다.
+
+
+
+
+
+
+내 풀이
+
+class Solution { public int solution(String s) { int answer = 0; answer = Integer.parseInt(s); return answer; } }
+
+음... Integer객체에 String을 int타입으로 바꾸는 parseInt() 함수가 있는데
+
+이게 +, - 부호도 바꿔주나보다
+
+​
+
+int answer = 1;
+
+if(s.indexOf(0)=='+'){
+
+s = s.substring(1);
+
+}else if(s.indexOf(0)=='-'){
+
+answer = -1;
+
+s = s.substring(1);
+
+}
+
+answer *= Integer.parseInt(s);
+
+
+이렇게 작성했는데 굳이 이렇게 안해도 되더라...
+
+​
+
+​
+
+​
+
+다른 사람 풀이
+
+코딩테스트 연습 / 연습문제 / 문자열을 정수로 바꾸기 / 다른 사람의 풀이 / -
+
+public class StrToInt { public int getStrToInt(String str) { boolean Sign = true; int result = 0; for (int i = 0; i < str.length(); i++) { char ch = str.charAt(i); if (ch == '-') Sign = false; else if(ch !='+') result = result * 10 + (ch - '0'); } return Sign?1:-1 * result; } //아래는 테스트로 출력해 보기 위한 코드입니다. public static void main(String args[]) { StrToInt strToInt = new StrToInt(); System.out.println(strToInt.getStrToInt("-1234")); } }
+
