@@ -1,0 +1,67 @@
+문제 설명
+
+문자열 s는 한 개 이상의 단어로 구성되어 있습니다. 각 단어는 하나 이상의 공백문자로 구분되어 있습니다. 각 단어의 짝수번째 알파벳은 대문자로, 홀수번째 알파벳은 소문자로 바꾼 문자열을 리턴하는 함수, solution을 완성하세요.
+
+​
+
+제한 사항
+
+문자열 전체의 짝/홀수 인덱스가 아니라, 단어(공백을 기준)별로 짝/홀수 인덱스를 판단해야합니다.
+
+첫 번째 글자는 0번째 인덱스로 보아 짝수번째 알파벳으로 처리해야 합니다.
+
+​
+
+입출력 예
+
+s
+
+return
+
+try hello world
+
+TrY HeLlO WoRlD
+
+입출력 예 설명
+
+try hello world는 세 단어 try, hello, world로 구성되어 있습니다. 각 단어의 짝수번째 문자를 대문자로, 홀수번째 문자를 소문자로 바꾸면 TrY, HeLlO, WoRlD입니다. 따라서 TrY HeLlO WoRlD 를 리턴합니다.
+
+
+
+
+
+내 풀이
+
+class Solution { public String solution(String s) { String answer = ""; boolean flag = false; final int change = 'z'-'Z'; for(int i=0;i<s.length();i++){ char ch = s.charAt(i); if(ch==' '){ // 공백 처리 answer += ' '; flag = true; continue; } if(i==0 || flag){ // 짝수번째 처리 if(ch>='a'){ // 받은 글자가 소문자일 경우 answer += (char)(ch - change); }else{ answer += ch; } flag = false; }else{ // 홀수번째 처리 if(ch>='a'){ answer += ch; }else{ answer += (char)(ch + change); } flag = true; } } return answer; } }
+
+실행시간이 각 12~25ms 정도 나왔다.
+
+​
+
+
+​
+
+다른사람풀이
+
+코딩테스트 연습 / 연습문제 / 이상한 문자 만들기 / 다른 사람의 풀이 / - , - , - , 이상호 , - 외 40 명
+
+class Solution { public String solution(String s) { String answer = ""; int cnt = 0; String[] array = s.split(""); for(String ss : array) { cnt = ss.contains(" ") ? 0 : cnt + 1; answer += cnt%2 == 0 ? ss.toLowerCase() : ss.toUpperCase(); } return answer; } }
+
+split()를 이용해 String 배열로 만들고
+3항 연산자를 이용해서 공백(" ")이 있는 경우 cnt를 0, 아닌 경우에 cnt++을 해서
+cnt%2==0 (cnt를 2로 나눈 나머지가 0) 인 경우 소문자, 아닌경우 대문자로 바꾸셨다.
+실행시간도 각 1~2ms정도밖에 안걸린다.
+
+​
+
+
+이 내용을 내가 쓴 풀이에 하나씩 적용시켜 보았다.
+
+1. boolean flag 대신 int cnt 사용 시간상 큰 변화 없음
+2. Character.toUpperCase(char) 사용 시간상 큰 변화 없음
+3. String배열 생성후 String 객체의 toUpperCase() 사용 시간상 큰 변화 있음 (각 12~25ms → 1~2ms)
+
+혹시 String을 char형태로 바꾸는게 시간이 많이 걸리는거 아닐까????????????
+
+다음에 혹시 문자열의 문자 하나하나에 접근해야될 일이 생기면 이 방식으로 해봐야 겠다!!
+
