@@ -1,0 +1,51 @@
+문제 설명
+
+이 문제에는 표준 입력으로 두 개의 정수 n과 m이 주어집니다.
+
+별(*) 문자를 이용해 가로의 길이가 n, 세로의 길이가 m인 직사각형 형태를 출력해보세요.
+
+​
+
+제한 조건
+
+n과 m은 각각 1000 이하인 자연수입니다.
+
+​
+
+예시
+
+입력
+
+5 3
+
+출력
+
+*****
+*****
+*****
+
+
+
+
+내 풀이
+
+import java.util.Scanner; public class Solution { public static void main(String[] args) { Scanner sc = new Scanner(System.in); int a = sc.nextInt(); int b = sc.nextInt(); for(int i=0;i<b;i++){ for(int j=0;j<a;j++){ System.out.print("*"); } System.out.println(); } } }
+
+실행시간 각 189.97 ~ 404.95ms
+
+
+
+
+다른사람풀이
+
+코딩테스트 연습 / 연습문제 / 직사각형 별찍기 / 다른 사람의 풀이 / 신은경 , paul-kim , - , wade , Dahun Kang 외 1 명
+
+import java.util.Scanner; public class Solution { public static void main(String[] args) { Scanner sc = new Scanner(System.in); int a = sc.nextInt(); int b = sc.nextInt(); StringBuilder sb = new StringBuilder(); for(int i=0; i<a; i++){ sb.append("*"); } for(int i=0; i<b; i++){ System.out.println(sb.toString()); } } }
+
+실행시간 각 184.46 ~ 255.04ms 으로 내 풀이보다 빠르다.
+
+a만큼 StringBuilder sb에 "*"을 추가하고,
+b만큼 sb를 println()으로 출력!
+
+한마디로 출력은 b번만 하니까 내 풀이(a*b번)보다 시간이 빠른 것 같다!
+
