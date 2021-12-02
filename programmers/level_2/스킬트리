@@ -1,0 +1,337 @@
+문제 설명
+
+선행 스킬이란 어떤 스킬을 배우기 전에 먼저 배워야 하는 스킬을 뜻합니다.
+
+​
+
+예를 들어 선행 스킬 순서가 스파크 → 라이트닝 볼트 → 썬더일때, 썬더를 배우려면 먼저 라이트닝 볼트를 배워야 하고, 라이트닝 볼트를 배우려면 먼저 스파크를 배워야 합니다.
+
+​
+
+위 순서에 없는 다른 스킬(힐링 등)은 순서에 상관없이 배울 수 있습니다. 따라서 스파크 → 힐링 → 라이트닝 볼트 → 썬더와 같은 스킬트리는 가능하지만, 썬더 → 스파크나 라이트닝 볼트 → 스파크 → 힐링 → 썬더와 같은 스킬트리는 불가능합니다.
+
+​
+
+선행 스킬 순서 skill과 유저들이 만든 스킬트리1를 담은 배열 skill_trees가 매개변수로 주어질 때, 가능한 스킬트리 개수를 return 하는 solution 함수를 작성해주세요.
+
+​
+
+제한 조건
+
+- 스킬은 알파벳 대문자로 표기하며, 모든 문자열은 알파벳 대문자로만 이루어져 있습니다.
+
+- 스킬 순서와 스킬트리는 문자열로 표기합니다.
+
+    - 예를 들어, C → B → D 라면 CBD로 표기합니다
+
+- 선행 스킬 순서 skill의 길이는 1 이상 26 이하이며, 스킬은 중복해 주어지지 않습니다.
+
+- skill_trees는 길이 1 이상 20 이하인 배열입니다.
+
+- skill_trees의 원소는 스킬을 나타내는 문자열입니다.
+
+    - skill_trees의 원소는 길이가 2 이상 26 이하인 문자열이며, 스킬이 중복해 주어지지 않습니다.
+
+​
+
+입출력 예
+
+skill
+
+skill_trees
+
+return
+
+"CBD"
+
+["BACDE", "CBADF", "AECB", "BDA"]
+
+2
+
+입출력 예 설명
+
+BACDE: B 스킬을 배우기 전에 C 스킬을 먼저 배워야 합니다. 불가능한 스킬트립니다.
+
+CBADF: 가능한 스킬트리입니다.
+
+AECB: 가능한 스킬트리입니다.
+
+BDA: B 스킬을 배우기 전에 C 스킬을 먼저 배워야 합니다. 불가능한 스킬트리입니다.
+
+스킬 트리: 유저가 스킬을 배울 순서 ↩
+
+
+
+
+
+내 풀이 < Array >
+
+class Solution {
+    public int solution(String skill, String[] skill_trees) {
+        int answer = 0;
+        char[] skill_char = skill.toCharArray(); // 스킬순서 각 스킬 배열에 담기
+        boolean isOk; // 가능한 스킬트리인지! 스킬트리가 스킬순서에 맞게 되어있으면 true/ 아니면 false
+
+        for(int i=0; i<skill_trees.length; i++){
+            isOk = true;
+            int[] skill_index = new int[skill.length()]; // 스킬트리에서 스킬순서에 있는 스킬의 위치를 담을 배열 선언
+
+            // skill_trees[i]에서의 각 skill_char[j] 위치를 skill_index[j]에 저장 (없는 경우 -1)
+            for(int j=0; j<skill_char.length; j++){
+                skill_index[j] = skill_trees[i].indexOf(skill_char[j]);
+            }
+            
+            // 스킬순서의 위치에 맞게 되어있는지 확인!
+            // 1. 위치가 선행스킬보다 전에 있거나 2. 선행스킬을 배우지 않았을 경우 -> 불가능한 스킬트리!
+            for(int j=skill_index.length-1; j>0; j--){
+                if( ( skill_index[j]!=-1 && skill_index[j-1]!=-1 && skill_index[j-1] > skill_index[j] )
+                   || ( skill_index[j]!=-1 && skill_index[j-1]==-1 ) ){
+                    isOk = false;
+                    break;
+                }
+            }
+            
+            if(isOk){
+                answer++;
+            }
+        }
+        return answer;
+    }
+}
+음! 평균 0.03ms 가 걸린다.
+
+나쁘지 않다고 생각했는데.. 다른 사람 풀이1을 보니까...이마를 탁!! 쳤다
+
+​
+
+​
+
+다른사람풀이1 < ArrayList, Iterator >
+
+코딩테스트 연습 / Summer/Winter Coding(~2018) / 스킬트리 / 다른 사람의 풀이 / HEN , 이대근 , 배창희 , suho1991
+
+import java.util.*;
+
+class Solution {
+    public int solution(String skill, String[] skill_trees) {
+        int answer = 0;
+        ArrayList<String> skillTrees = new ArrayList<String>(Arrays.asList(skill_trees));
+        Iterator<String> it = skillTrees.iterator();
+
+        while (it.hasNext()) {
+            if (skill.indexOf(it.next().replaceAll("[^" + skill + "]", "")) != 0) {
+                it.remove();
+            }
+        }
+        answer = skillTrees.size();
+        return answer;
+    }
+}
+와우~ skill_trees에 skill을 맞추는 것이 아닌, skill에 skill_trees를 맞춰버렸네요. 생각의 전환!!
+
+​
+
+while문으로
+
+1. 정규표현식( [^skill] )을 사용해서 skill문자열을 제외한 나머지 문자 모두 제거 
+
+2. indexof로 순서를 무시하지 않았는지 확인 
+
+3. 무시했다면 제거 
+
+​
+
+while문 이후 
+
+4. list 길이 반환
+
+​
+
+​
+
+여기서 Iterator의 요소를 삭제했는데 list의 요소가 사라져 list의 size가 줄었음을 알 수 있다!
+
+​
+
+Iterator란 컬렉션에 저장된 각 요소에 접근하는 기능을 가진 인터페이스로, 
+
+Collection인터페이스에는 'Iterator(Iterator를 구현한 클래스의 인스턴스)'를 반환하는 iterator()를 정의한다.
+
+- Java의 정석 (남궁 성 지음)
+
+​
+
+​
+
+평균 실행시간은  11.48ms로 
+
+내 풀이보다 오래걸리기는 하지만, 
+
+정말 발상의 전환이 놀랍고, 보기에 간단한 코드인 것 같다.
+
+​
+
+​
+
+* 추가로 참고할 링크
+
+
+ 
+Java - 정규표현식(regex), 다양한 예제로 쉽게 이해하기
+정규표현식(Regular expressions), Regex는 문자열에서 어떤 패턴을 찾는데 도움을 줍니다. Regex의 Metacharacters, Quantifiers, Grouping에 대해서 정리하였고 다양한 예제로 설명합니다. Regex는 대부분 알고 있지만, 적용할 표현들이 헷갈렸다면 이 글을 참고하시면 좋을 것 같습니다.
+
+codechacha.com
+
+ 
+[자바] 컬렉션에서 원소 삭제하기 (ConcurrentModificationException 피하면서)
+Engineering Blog by Dale Seo
+
+www.daleseo.com
+
+ 
+[Java] 리스트 순환중에 특정 객체 삭제하기 | 아이군의 블로그
+[Java] 리스트 순환중에 특정 객체 삭제하기 0 Comments List < String > list = new ArrayList < String >() ; list. add ( "AAAA" ) ; list. add ( "BBBB" ) ; list. add ( "CCCC" ) ; list. add ( "DDDD" ) ; list. add ( "EEEE" ) ; list. add ( "FFFF" ) ; list. add ( "GGGG" ) ; for ( String value : list ) { if ( value. startsW...
+
+theeye.pe.kr
+
+​
+
+다른사람풀이2 < Array >
+
+https://chucoding.tistory.com/67
+
+class Solution {
+    public int solution(String skill, String[] skill_trees) {
+        int answer = skill_trees.length;
+        
+        for(int i=0; i<skill_trees.length; i++){
+            if(skill.indexOf(skill_trees[i].replaceAll("[^"+skill+"]", "")) != 0 ){
+                answer--;
+            }
+        }
+        return answer;
+    }
+}
+이건 위의 다른사람풀이1을 보고 위 출처의 분이 ArrayList랑 Iterator없이 작성한 코드!
+
+​
+
+보기에도 더욱 간결해졌고, 평균 실행시간도 11.06ms 로 위의 풀이보다 약간 빨라졌다.
+
+​
+
+​
+
+다른사람풀이3 <LinkedList>
+
+https://chucoding.tistory.com/67
+
+import java.util.LinkedList;
+
+class Solution {
+    public int solution(String skill, String[] skill_trees) {
+        int answer = 0;
+        
+        char[] s = skill.toCharArray();
+        LinkedList<Character> list = new LinkedList<Character>();
+        
+        for(int i=0; i<skill_trees.length; i++){
+            for(int j=0; j<s.length; j++){
+                list.add(s[j]);
+            }
+            
+            boolean b = true;
+            
+            for(int j=0; j<skill_trees[i].length(); j++){
+                if(!list.isEmpty() && skill_trees[i].charAt(j) == list.getFirst()){
+                    list.removeFirst();
+                }else{
+                    for(int k=0; k<list.size(); k++){
+                        if(skill_trees[i].charAt(j) == list.get(k)){
+                            b = false;
+                            break;
+                        }
+                    }
+                }
+                
+                if(!b){
+                    break;
+                }
+            }
+            
+            list.clear();
+            if(b){
+                answer++;
+            }
+        }
+        
+        return answer;
+    }
+}
+이 분은 내 풀이랑 비스읏...? 한 거 같은데 LinkedList를 사용하셔서 가져와봤다!
+
+평균 실행시간은 0.29ms
+
+​
+
+​
+
+LinkedList란?
+
+연결 리스트(LinkedList)는 각 노드가 데이터와 포인터를 가지고 한 줄로 연결되어 있는 방식의 자료구조입니다. 데이터를 담고 있는 노드들이 연결되어 있고, 노드의 포인터가 이전 노드와 다음 노드와의 연결을 담당합니다. Node는 LinkedList에 객체를 추가하거나 삭제하면 앞뒤 링크만 변경되고 나머지 링크는 변경되지 않습니다. 중간에 데이터를 추가나 삭제하더라도 전체의 인덱스가 한 칸씩 뒤로 밀리거나 당겨지는 일이 없기에 ArrayList에 비해서 데이터의 추가나 삭제가 용이하나, 인덱스가 없기에 특정 요소에 접근하기 위해서는 순차 탐색이 필요로 하여 탐색 속도가 떨어진다는 단점이 있습니다. 그러므로 탐색 또는 정렬을 자주 하는 경우엔 배열을 사용하고 데이터의 추가/삭제가 많은 경우 연결 리스트를 사용하는 것이 좋습니다.
+
+​
+
+* 위의 설명은 아래의 링크 내용입니다.
+
+
+ 
+[Java] 자바 LinkedList 사용법 & 예제 총정리
+LinkedList란? 연결 리스트(LinkedList)는 각 노드가 데이터와 포인터를 가지고 한 줄로 연결되어 있는 방식의 자료구조입니다. 데이터를 담고 있는 노드들이 연결되어 있고, 노드의 포인터가 이전 노드와 다음 노..
+
+coding-factory.tistory.com
+
+​
+
+​
+
+다른사람풀이 < Array >
+
+코딩테스트 연습 / Summer/Winter Coding(~2018) / 스킬트리 / 다른 사람의 풀이 / 
+
+class Solution {
+    public int solution(String skill, String[] skill_trees) {
+        int answer = 0;
+        for (String skillTree : skill_trees) {
+            int learningIdx = 0;
+            boolean isAble = true;
+            for (char curSkill : skillTree.toCharArray()) {
+                int skillIdx = skill.indexOf(curSkill);
+                if (skillIdx == -1)
+                    continue;
+                else if (skillIdx == learningIdx)
+                    learningIdx++;
+                else {
+                    isAble = false;
+                    break;
+                }
+            }
+            if (isAble)
+                answer++;
+        }
+        return answer;
+    }
+}
+오우 이것도 내 풀이랑 아주 유사한데, 내 풀이와 차이점은
+
+​
+
+나는 skill_trees[i]에서 각 문자에 skill문자의 위치를 찾아냈고,
+
+이 분은 skill에서 skill_trees[i]문자의 위치를 찾아냈다!
+
+그러면 if문이 조금 더 간단해지는구나!
+
+​
+
+실행시간은 평균 0.03ms로 내 풀이와 가장 비슷하다!
