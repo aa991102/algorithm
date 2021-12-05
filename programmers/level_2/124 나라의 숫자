@@ -1,0 +1,201 @@
+문제 설명
+
+124 나라가 있습니다. 124 나라에서는 10진법이 아닌 다음과 같은 자신들만의 규칙으로 수를 표현합니다.
+
+124 나라에는 자연수만 존재합니다.
+
+124 나라에는 모든 수를 표현할 때 1, 2, 4만 사용합니다.
+
+예를 들어서 124 나라에서 사용하는 숫자는 다음과 같이 변환됩니다.
+
+10진법
+
+124 나라
+
+10진법
+
+124 나라
+
+1
+
+1
+
+6
+
+14
+
+2
+
+2
+
+7
+
+21
+
+3
+
+4
+
+8
+
+22
+
+4
+
+11
+
+9
+
+24
+
+5
+
+12
+
+10
+
+41
+
+자연수 n이 매개변수로 주어질 때, n을 124 나라에서 사용하는 숫자로 바꾼 값을 return 하도록 solution 함수를 완성해 주세요.
+
+​
+
+제한사항
+
+n은 500,000,000이하의 자연수 입니다.
+
+​
+
+입출력 예
+
+n
+
+result
+
+1
+
+1
+
+2
+
+2
+
+3
+
+4
+
+4
+
+11
+
+내 풀이
+
+import java.util.*;
+
+class Solution {
+    public String solution(int n) {
+        StringBuffer answer_reverse = new StringBuffer();
+        
+        List<Integer> list = new ArrayList<Integer>();
+        
+        while(n>0){
+            list.add(n%3);
+            n = n/3;
+        }
+        
+        for(int i=0; i<list.size(); i++){
+            if(list.get(i)>0){
+                answer_reverse.append(list.get(i));
+            }else if(list.get(i)==0){
+                if(i<list.size()-1){
+                    list.set(i+1,list.get(i+1)-1);
+                    answer_reverse.append('4');
+                }
+            }else{
+                if(i<list.size()-1){
+                    list.set(i+1,list.get(i+1)-1);
+                    answer_reverse.append('2');
+                }
+            }
+        }
+        
+        return answer_reverse.reverse().toString();
+    }
+}
+ StringBuffer가 아닌 String에 저장하고 for문으로 하나하나 문자열을 거꾸로 뒤집었더니 평균 20ms 의 실행시간이 걸렸다..
+
+그래서 효율성 테스트에서 전부 시간초과로 실패해서 방법을 찾아봤는데 StringBuffer...!
+
+심지어 for문으로 하나하나 문자열 거꾸로 뒤집는 걸 StringBuffer의 함수인 reverse()를 이용하면 된다는거!!
+
+​
+
+덕분에 실행시간이 0.1ms 로 대폭 줄었다!! 효율성 테스트도 통과!
+
+​
+
+이로써 하나 또 배워갑니다... String을 뒤집거나 String문자에 접근해야할 때는 StringBuffer를 이용하자~~
+
+​
+
+​
+
+​
+
+다른사람풀이1
+
+코딩테스트 연습 / 연습문제 / 124 나라의 숫자 / 다른 사람의 풀이 / Jeong Gyeongjun , 이유진 , 윤혜정 , - , - 외 31 명
+
+class Solution {
+  public String solution(int n) {
+      String[] num = {"4","1","2"};
+      String answer = "";
+
+      while(n > 0){
+          answer = num[n % 3] + answer;
+          n = (n - 1) / 3;
+      }
+      return answer;
+  }
+}
+와....진짜 탄성을 금치 못하겠어요...
+
+선생님들....ㅠㅠㅠㅠㅠ!!!
+
+​
+
+내가 진짜 생각도 못했던거...
+
+1. 배열을 생성해 n을 3으로 나눈 나머지를 배열의 인덱스로 지정한 점
+2. answer = 추가할 숫자 + answer;   (  answer += 추가할 숫자;   로 밖에 생각하지 못한 나의 굳은 뇌를 주무르고싶다...)
+
+​
+n = (n-1)/3;
+
+이 부분은.... 자리올림을 안하게 하는 그런...느낌인거같은데...
+정확히 설명을 못하겠다..... 나중에 다시 보자......
+-> n이 3일때 3으로 나눈 몫은 1인데 이 문제에서는(124나라에서는) 3이 들어오면 "4"를 내보내니까... while문을 더이상 돌 필요가 없으니까... 이런 처리를 한 것 같다...
+​
+
+​
+
+다른사람풀이2
+
+코딩테스트 연습 / 연습문제 / 124 나라의 숫자 / 다른 사람의 풀이 / 덱스또 , Cloud
+
+class Solution {
+  public String solution(int n) {
+        return change124(n);
+  }
+
+  public String change124(int n) {
+        String answer = "";
+        if (n > 0) {
+            int rest = n % 3;
+            answer = ((rest == 0) ? "4" : (rest == 1) ? "1" : "2") + answer;
+            answer = change124((n-1) / 3) + answer;
+        }
+        return answer;
+  }   
+}
+이 풀이는 재귀함수를 이용한 풀이!
