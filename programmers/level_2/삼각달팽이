@@ -1,0 +1,237 @@
+문제 설명
+
+정수 n이 매개변수로 주어집니다. 다음 그림과 같이 밑변의 길이와 높이가 n인 삼각형에서 맨 위 꼭짓점부터 반시계 방향으로 달팽이 채우기를 진행한 후, 첫 행부터 마지막 행까지 모두 순서대로 합친 새로운 배열을 return 하도록 solution 함수를 완성해주세요.
+
+
+제한사항
+
+n은 1 이상 1,000 이하입니다.
+
+입출력 예
+
+n
+
+result
+
+4
+
+[1,2,9,3,10,8,4,5,6,7]
+
+5
+
+[1,2,12,3,13,11,4,14,15,10,5,6,7,8,9]
+
+6
+
+[1,2,15,3,16,14,4,17,21,13,5,18,19,20,12,6,7,8,9,10,11]
+
+입출력 예 설명
+
+입출력 예 #1
+
+문제 예시와 같습니다.
+
+입출력 예 #2
+
+문제 예시와 같습니다.
+
+입출력 예 #3
+
+문제 예시와 같습니다.
+
+​
+
+​
+
+다른사람풀이1
+
+코딩테스트 연습 / 월간 코드 챌린지 시즌1 / 삼각 달팽이 / 다른 사람의 풀이 / nimkoes
+
+class Solution {
+    public int[] solution(int n) {
+        int[] answer = new int[(n*(n+1))/2];
+        int[][] matrix = new int[n][n];
+
+        int x = -1, y = 0;
+        int num = 1;
+
+        for (int i = 0; i < n; ++i) {
+            for (int j = i; j < n; ++j) {
+                if (i % 3 == 0) {
+                    ++x;
+                } else if (i % 3 == 1) {
+                    ++y;
+                } else if (i % 3 == 2) {
+                    --x;
+                    --y;
+                }
+                matrix[x][y] = num++;
+            }
+        }
+
+        int k = 0;
+        for(int i = 0; i < n; ++i) {
+            for(int j = 0; j < n; ++j) {
+                if(matrix[i][j] == 0) break;
+                answer[k++] = matrix[i][j];
+            }
+        }
+
+        return answer;
+    }
+}
+​
+
+와...
+한 변에 진행되는 과정이 총 숫자 n번 만큼 진행된다는 거!!! 처음 알았다.....
+
+
+
+
+다른사람풀이2
+
+코딩테스트 연습 / 월간 코드 챌린지 시즌1 / 삼각 달팽이 / 다른 사람의 풀이 / limyohwan
+
+import java.util.*;
+class Solution {
+    public int[] solution(int n) {
+        int[] answer = {};
+
+        if(n == 1){
+            answer = new int[1];
+            answer[0] = 1;
+            return answer;
+        }
+
+        int[][] dal = new int[n][n];
+        int num = 1;
+        int x = 0;
+        int xlen = n;
+        int ylen = n;
+        int y = 0;
+        int mod = 1;
+        int max = ((n * n) + n)/2;
+        answer = new int[max];
+
+        while(num < max + 1){
+            //System.out.println("x : " + x + " y : "+ y + " n : " + n + " num : " + num);
+            if(mod == 1){
+                dal[x][y] = num;
+                num++;
+                x++;
+
+                if(x > xlen - 1){
+                    x = xlen - 1;
+                    mod = 2;
+                    y++;
+                    xlen--;
+                }
+            }else if(mod == 2){
+                dal[x][y] = num;
+                num++;
+                y++;
+
+                if(y == ylen){
+                    y = ylen - 2;
+                    mod = 3;
+                    x--;
+                    ylen = ylen -2;
+                }
+            }else if(mod == 3){
+                dal[x][y] = num;
+                num++;
+                x--;
+                y--;
+                if(dal[x][y] != 0){
+                    mod = 1;
+                    x++;
+                    y++;
+                    x++;
+                }
+            }
+
+        }
+
+        int index = 0;
+        for(int i = 0; i < dal.length; i++){
+            for(int j = 0; j < dal[i].length; j++){
+                if(dal[i][j] != 0){
+                    answer[index] = dal[i][j];
+                    index++;
+                }
+            }
+        }
+
+
+        return answer;
+    }
+}
+​
+
+​
+
+다른사람풀이3
+
+코딩테스트 연습 / 월간 코드 챌린지 시즌1 / 삼각 달팽이 / 다른 사람의 풀이 / 박승세 , donghwan Kim , 김채윤 , 박준수
+
+class Solution {
+    public int[] solution(int n) {
+        int N = leng(n);
+        int[] answer = new int[N];
+        int[][] map = new int[n][n];
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<=i; j++)
+                map[i][j] = -1;
+        }
+
+        int num = 2;
+        int i=0;
+        int j=0;
+        map[i][j] = 1;
+
+        loop:while(num<=N) {
+            while(true) {
+                if(i+1>=n || map[i+1][j]!=-1) break;
+                map[i+1][j] = num;
+                i++;
+                num++;
+                if(num>N) break loop;
+            }
+
+            while(true) {
+                if(j+1>=n || map[i][j+1]!=-1) break;
+                map[i][j+1] = num;
+                j++;
+                num++;
+                if(num>N) break loop;
+            }
+
+            while(true) {
+                if(i-1<0 || j-1<0 || map[i-1][j-1]!=-1) break;
+                map[i-1][j-1] = num;
+                i--;
+                j--;
+                num++;
+
+                if(num>N) break loop;
+            }
+        }
+
+        int idx = 0;
+        for(int k=0; k<n; k++) {
+            for(int l=0; l<k+1; l++) {
+                answer[idx] = map[k][l];
+                idx++;
+            }
+        }
+
+        return answer;
+    }
+
+    public int leng(int n) {
+        if(n==1)
+            return 1;
+
+        return n+leng(n-1);
+    }
+}
