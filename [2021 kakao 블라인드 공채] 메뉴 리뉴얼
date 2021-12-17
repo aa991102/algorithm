@@ -1,0 +1,418 @@
+문제 설명
+
+레스토랑을 운영하던 스카피는 코로나19로 인한 불경기를 극복하고자 메뉴를 새로 구성하려고 고민하고 있습니다.
+
+기존에는 단품으로만 제공하던 메뉴를 조합해서 코스요리 형태로 재구성해서 새로운 메뉴를 제공하기로 결정했습니다. 
+
+어떤 단품메뉴들을 조합해서 코스요리 메뉴로 구성하면 좋을 지 고민하던 "스카피"는 이전에 각 손님들이 주문할 때 가장 많이 함께 주문한 단품메뉴들을 코스요리 메뉴로 구성하기로 했습니다.
+
+​
+
+단, 코스요리 메뉴는 최소 2가지 이상의 단품메뉴로 구성하려고 합니다. 
+
+또한, 최소 2명 이상의 손님으로부터 주문된 단품메뉴 조합에 대해서만 코스요리 메뉴 후보에 포함하기로 했습니다.
+
+​
+
+예를 들어, 손님 6명이 주문한 단품메뉴들의 조합이 다음과 같다면,
+
+(각 손님은 단품메뉴를 2개 이상 주문해야 하며, 각 단품메뉴는 A ~ Z의 알파벳 대문자로 표기합니다.)
+
+손님 번호
+
+주문한 단품메뉴 조합
+
+1번 손님
+
+A, B, C, F, G
+
+2번 손님
+
+A, C
+
+3번 손님
+
+C, D, E
+
+4번 손님
+
+A, C, D, E
+
+5번 손님
+
+B, C, F, G
+
+6번 손님
+
+A, C, D, E, H
+
+가장 많이 함께 주문된 단품메뉴 조합에 따라 "스카피"가 만들게 될 코스요리 메뉴 구성 후보는 다음과 같습니다.
+
+코스 종류
+
+메뉴 구성
+
+설명
+
+요리 2개 코스
+
+A, C
+
+1번, 2번, 4번, 6번 손님으로부터 총 4번 주문됐습니다.
+
+요리 3개 코스
+
+C, D, E
+
+3번, 4번, 6번 손님으로부터 총 3번 주문됐습니다.
+
+요리 4개 코스
+
+B, C, F, G
+
+1번, 5번 손님으로부터 총 2번 주문됐습니다.
+
+요리 4개 코스
+
+A, C, D, E
+
+4번, 6번 손님으로부터 총 2번 주문됐습니다.
+
+​
+
+[문제]
+
+각 손님들이 주문한 단품메뉴들이 문자열 형식으로 담긴 배열 orders, "스카피"가 추가하고 싶어하는 코스요리를 구성하는 단품메뉴들의 갯수가 담긴 배열 course가 매개변수로 주어질 때, "스카피"가 새로 추가하게 될 코스요리의 메뉴 구성을 문자열 형태로 배열에 담아 return 하도록 solution 함수를 완성해 주세요.
+
+​
+
+[제한사항]
+
+- orders 배열의 크기는 2 이상 20 이하입니다.
+
+- orders 배열의 각 원소는 크기가 2 이상 10 이하인 문자열입니다.
+
+   - 각 문자열은 알파벳 대문자로만 이루어져 있습니다.
+
+   - 각 문자열에는 같은 알파벳이 중복해서 들어있지 않습니다.
+
+- course 배열의 크기는 1 이상 10 이하입니다.
+
+   - course 배열의 각 원소는 2 이상 10 이하인 자연수가 오름차순으로 정렬되어 있습니다.
+
+   - course 배열에는 같은 값이 중복해서 들어있지 않습니다.
+
+- 정답은 각 코스요리 메뉴의 구성을 문자열 형식으로 배열에 담아 사전 순으로 오름차순 정렬해서 return 해주세요.
+
+   - 배열의 각 원소에 저장된 문자열 또한 알파벳 오름차순으로 정렬되어야 합니다.
+
+   - 만약 가장 많이 함께 주문된 메뉴 구성이 여러 개라면, 모두 배열에 담아 return 하면 됩니다.
+
+   - orders와 course 매개변수는 return 하는 배열의 길이가 1 이상이 되도록 주어집니다.
+
+​
+
+[입출력 예]
+
+orders
+
+course
+
+result
+
+["ABCFG", "AC", "CDE", "ACDE", "BCFG", "ACDEH"]
+
+[2,3,4]
+
+["AC", "ACDE", "BCFG", "CDE"]
+
+["ABCDE", "AB", "CD", "ADE", "XYZ", "XYZ", "ACD"]
+
+[2,3,5]
+
+["ACD", "AD", "ADE", "CD", "XYZ"]
+
+["XYZ", "XWY", "WXA"]
+
+[2,3,4]
+
+["WX", "XY"]
+
+입출력 예에 대한 설명
+
+입출력 예 #1
+
+문제의 예시와 같습니다.
+
+​
+
+입출력 예 #2
+
+AD가 세 번, CD가 세 번, ACD가 두 번, ADE가 두 번, XYZ 가 두 번 주문됐습니다.
+
+요리 5개를 주문한 손님이 1명 있지만, 최소 2명 이상의 손님에게서 주문된 구성만 코스요리 후보에 들어가므로, 요리 5개로 구성된 코스요리는 새로 추가하지 않습니다.
+
+​
+
+입출력 예 #3
+
+WX가 두 번, XY가 두 번 주문됐습니다.
+
+3명의 손님 모두 단품메뉴를 3개씩 주문했지만, 최소 2명 이상의 손님에게서 주문된 구성만 코스요리 후보에 들어가므로, 요리 3개로 구성된 코스요리는 새로 추가하지 않습니다.
+
+또, 단품메뉴를 4개 이상 주문한 손님은 없으므로, 요리 4개로 구성된 코스요리 또한 새로 추가하지 않습니다.
+
+
+
+
+
+내 풀이 < Map, List, Array >
+
+import java.util.*;
+class Solution {
+    // 메뉴 조합을 넣을 map (메뉴조합,주문횟수)
+    HashMap<String,Integer> map = new HashMap<>();
+    
+    public String[] solution(String[] orders, int[] course) {
+
+        // 추가하고 싶은 각 메뉴 개수에 해당하는 조합 구하기
+        for(int c : course) {
+            for(int i=0; i<orders.length; i++){
+                char[] orders_char_array = orders[i].toCharArray();
+                boolean[] visited = new boolean[orders_char_array.length];
+                
+                if(c <= orders_char_array.length){
+                    comb(orders_char_array, visited, 0, c);
+                }
+            }
+        }
+
+        // map의 value값으로 key 내림차순 정렬(주문횟수가 많은 조합부터)
+        List<String> key_set = new ArrayList<>(map.keySet());
+        key_set.sort((o1,o2)->map.get(o2)-map.get(o1)); 
+                         
+        List<String> list = new ArrayList<>(); // 최다주문조합을 넣을 리스트(몇개가 나올지 몰라서 배열 대신 리스트로)
+        HashMap<Integer,Integer> course_map = new HashMap<>(); // course_map (메뉴 개수, 주문 횟수)
+        
+        for(String key : key_set) {
+            if(map.get(key)>1){ // 주문횟수 1회보다 클 때
+                // 조합개수가 course_map에 이미 존재하면
+                if(course_map.containsKey(key.length())){
+                    // 이미 들어있는 조합개수의 주문횟수와 값이 같으면 추가
+                    if(course_map.get(key.length()) == map.get(key)){
+                        list.add(key);
+                    }
+                }else{ // 길이 존재 안하면 추가
+                    course_map.put(key.length(), map.get(key));
+                    list.add(key);
+                }
+            }else{ // 주문횟수 1회면 반복문에서 나가기
+                break;
+            }
+        }
+        
+        String[] answer = new String[list.size()];
+        
+        for(int i=0; i<answer.length; i++){
+            answer[i] = list.get(i);
+        }
+        
+        Arrays.sort(answer);
+        
+        return answer;
+    }
+    
+    // 조합
+    public void comb(char[] arr, boolean[] visited, int depth, int r) {
+        if(r == 0) {
+            put(arr, visited);
+            return;
+        }
+        if(depth == arr.length) {
+            return;
+        } else {
+            visited[depth] = true;
+            comb(arr, visited, depth + 1, r - 1);
+ 
+            visited[depth] = false;
+            comb(arr, visited, depth + 1, r);
+        }
+    }
+    
+    // 구한 조합 map에 넣기
+    public void put(char[] arr, boolean[] visited) {
+        List<Character> list = new ArrayList<>();
+        
+        for(int i = 0; i < arr.length; i++) {
+            if(visited[i] == true){
+                list.add(arr[i]);
+            }
+        }
+        
+        char[]  char_arr = new char[list.size()];
+        
+        for(int i=0; i<char_arr.length; i++){
+            char_arr[i] = list.get(i);
+        }
+        
+        Arrays.sort(char_arr);
+        
+        String key = new String(char_arr);
+        
+        if(map.containsKey(key)){
+            map.put(key,map.get(key)+1);
+        }else {
+            map.put(key,1);
+        }
+        
+    }
+    
+}
+조합을 이용해서 했는데....하......ㅠㅠ 참 풀기위해 아주 애를 쓴 느낌이 드는 코드같다.....
+실행시간은 2.21 ~ 22.24ms
+
+​
+
+​
+
+다른사람풀이1 < PriorityQueue , Map, Array >
+
+코딩테스트 연습 / 2021 KAKAO BLIND RECRUITMENT / 메뉴 리뉴얼 / 다른 사람의 풀이 / 변성재 , gc , 마타마타거북 , Kylie Han , hwangda 외 4 명
+
+import java.util.HashMap;
+import java.util.PriorityQueue;
+import java.util.Arrays;
+class Solution {
+       static HashMap<String,Integer> map;
+    static int m;
+    public String[] solution(String[] orders, int[] course) {
+       PriorityQueue<String> pq = new PriorityQueue<>();
+        for (int i=0;i<course.length;i++){
+            map = new HashMap<>();
+            m=0;
+            for (int j=0;j<orders.length;j++) {
+                find(0, "", course[i], 0, orders[j]);
+            }
+            for (String s : map.keySet()){
+                if (map.get(s)==m&&m>1){
+                    pq.offer(s);
+                }
+            }
+        }
+        String  ans[] = new String[pq.size()];
+        int k=0;
+        while (!pq.isEmpty()){
+            ans[k++] = pq.poll();
+        }
+        return ans;
+    }
+    static void find(int cnt,String str,int targetNum,int idx,String word){
+        if (cnt==targetNum){
+            char[] c = str.toCharArray();
+            Arrays.sort(c);
+            String temps="";
+            for (int i=0;i<c.length;i++)temps+=c[i];
+            map.put(temps,map.getOrDefault(temps,0)+1);
+            m = Math.max(m,map.get(temps));
+            return;
+        }
+        for (int i=idx;i<word.length();i++){
+            char now =word.charAt(i);
+            find(cnt+1,str+now,targetNum,i+1,word);
+        }
+    }
+}
+
+실행속도가 충격적이다
+
+17.13 ~ 52.63ms 이렇게 걸리고, 가장 오래걸리는 하나는 145.15ms....!
+
+​
+
+​
+
+다른사람풀이2 < Map, List, Array >​​
+
+코딩테스트 연습 / 2021 KAKAO BLIND RECRUITMENT / 메뉴 리뉴얼 / 다른 사람의 풀이 / hellokongsoon
+
+import java.util.*;
+
+class Solution {
+
+    Map<String, Integer> courseMap = new HashMap<>();
+    List<String> answerList = new ArrayList<>();
+
+    public String[] solution(String[] orders, int[] course) {
+
+        // orders를 모두 오름차순으로 정렬
+        for (int i=0; i<orders.length; i++) {
+            char[] arr = orders[i].toCharArray();
+            Arrays.sort(arr);
+            orders[i] = String.valueOf(arr);
+        }
+
+        // course수의 모든 조합 구하기
+        for (int i=0; i<course.length; i++) {
+            for (int j=0; j<orders.length; j++) {
+                String order = orders[j];
+
+                if (course[i] <= order.length()) {
+                    boolean[] visited = new boolean[order.length()];
+                    combination(order.toCharArray(), 0, course[i], visited);
+                }
+            }
+
+            // 가장 많이 주문한 단품메뉴 조합 구하기, answer에 넣기
+            if (!courseMap.isEmpty()) {
+                findPopularCourse();
+                courseMap.clear(); 
+            }
+        }
+
+        Collections.sort(answerList);
+        String[] answer = new String[answerList.size()];
+        for (int i=0; i<answer.length; i++) {
+            answer[i] = answerList.get(i);
+        }
+        return answer;
+    }
+
+    public void combination(char[] order,int start, int r, boolean[] visited) {
+        if (r == 0) {
+            addCourse(order, visited);
+            return;
+        }
+
+        for (int i=start; i<order.length; i++) {
+            visited[i] = true;
+            combination(order, i+1, r-1, visited);
+            visited[i] = false;
+        }
+    }
+
+    public void addCourse(char[] order, boolean[] visited) {
+        String course = "";
+        for (int i=0; i<order.length; i++) {
+            if (visited[i]) {
+                course += order[i];
+            }
+        }
+        courseMap.put(course, courseMap.getOrDefault(course, 0) + 1);
+    }
+
+    public void findPopularCourse() {
+        List<Integer> countList = new ArrayList<>(courseMap.values());
+        int max = Collections.max(countList);
+
+        if (max >= 2) {
+            for (String key: courseMap.keySet()) {
+                if (courseMap.get(key) == max){
+                    answerList.add(key);
+                }
+            }
+        }
+    }
+}
+흠 내 풀이와 비슷한데 약간 다른것 같아서 가져왔다.
+
+실행시간은 내 풀이보다 더 오래 걸린다. 14.93 ~ 44.97ms
