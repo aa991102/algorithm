@@ -1,0 +1,604 @@
+문제 설명
+
+조이스틱으로 알파벳 이름을 완성하세요. 맨 처음엔 A로만 이루어져 있습니다.
+
+ex) 완성해야 하는 이름이 세 글자면 AAA, 네 글자면 AAAA
+
+​
+
+조이스틱을 각 방향으로 움직이면 아래와 같습니다.
+
+▲ - 다음 알파벳 
+
+▼ - 이전 알파벳 (A에서 아래쪽으로 이동하면 Z로) 
+
+◀ - 커서를 왼쪽으로 이동 (첫 번째 위치에서 왼쪽으로 이동하면 마지막 문자에 커서) 
+
+▶ - 커서를 오른쪽으로 이동 
+
+​
+
+예를 들어 아래의 방법으로 "JAZ"를 만들 수 있습니다.
+
+- 첫 번째 위치에서 조이스틱을 위로 9번 조작하여 J를 완성합니다. 
+
+- 조이스틱을 왼쪽으로 1번 조작하여 커서를 마지막 문자 위치로 이동시킵니다.
+
+- 마지막 위치에서 조이스틱을 아래로 1번 조작하여 Z를 완성합니다. 
+
+따라서 11번 이동시켜 "JAZ"를 만들 수 있고, 이때가 최소 이동입니다. 
+
+​
+
+만들고자 하는 이름 name이 매개변수로 주어질 때, 
+
+이름에 대해 조이스틱 조작 횟수의 최솟값을 return 하도록 solution 함수를 만드세요.
+
+​
+
+제한 사항
+
+name은 알파벳 대문자로만 이루어져 있습니다.
+
+name의 길이는 1 이상 20 이하입니다.
+
+​
+
+입출력 예
+
+name
+
+return
+
+"JEROEN"
+
+56
+
+"JAN"
+
+23
+
+출처
+
+
+
+
+
+
+내 풀이 ( 실패 )
+
+class Solution {
+    public int solution(String name) {
+        if(name.length()==1) {
+            return name.charAt(0)-'A';
+        }
+        
+        // 오른쪽으로 갈지 왼쪽으로 갈지 결정!
+        int answer = 0;
+        int right = 0;
+        int left = 0;
+        
+        for(int i=1; i<name.length(); i++){
+            if(name.charAt(i) != 'A'){
+                break;
+            }
+            right++;
+        }
+        for(int i=name.length()-1; i>0; i--){
+            if(name.charAt(i) != 'A'){
+                break;
+            }
+            left++;
+        }
+        
+        int end = 0;
+        
+        if(right <= left){ // 오른쪽으로 이동
+            for(int i=name.length()-1; i>=0; i--){
+                if(name.charAt(i) != 'A'){
+                    end = i;
+                    break;
+                }
+            }
+            
+            for(int i=0; i<=end; i++){
+                if(i==0){
+                    answer = name.charAt(0)-'A';
+                    continue;
+                }
+                
+                if(name.charAt(i)<='N'){ // up
+                    answer += name.charAt(i) - 'A' + 1;
+                }else{ // down
+                    answer += 'Z'- name.charAt(i) + 2;
+                }
+            }
+        }else{ // 왼쪽으로 이동
+            for(int i=1; i<name.length(); i++){
+                if(name.charAt(i) != 'A'){
+                    end = i;
+                    break;
+                }
+            }
+            
+            answer = name.charAt(0)-'A';
+            for(int i=name.length()-1; i>=end; i--){
+                if(name.charAt(i)<='N'){ // up
+                    answer += name.charAt(i) - 'A' + 1;
+                }else{ // down
+                    answer += 'Z'- name.charAt(i) + 2;
+                }
+            }
+        }
+        
+        return answer;
+    }
+}
+정확성 테스트 11문제 중에 2, 5, 9, 11번 실패
+
+​
+
+질문하기에서 테스트케이스 예시를 가져왔을 때의 실행 내용을 봤을때, 
+
+내 코드의 문제는
+
+무조건 한 방향으로 가는 것!
+
+​
+
+예를 들어
+
+"ABAAAABA" 가 들어왔을 때,
+
+내 코드는 오른쪽으로 방향을 정해서 마지막 B까지 진행. 이 경우 8을 리턴​한다.
+
+하지만 방향을 중간에 바꾼다면, 첫번째 B까지 오른쪽으로 갔다가 다시 왼쪽으로 가서 마지막 B까지 진행하면 6을 리턴​한다.
+
+ 
+
+​
+
+​
+
+다른사람풀이1
+
+코딩테스트 / 연습 탐욕법(Greedy) / 조이스틱 / 다른 사람의 풀이 / - , - , CHOI , 최성욱 , 박상기 외 4 명
+
+class Solution {
+    public int solution(String name) {
+        int answer = 0;
+        int[] diff={0,1,2,3,4,5,6,7,8,9,10,11,12,13,12,11,10,9,8,7,6,5,4,3,2,1};
+        for(char c:name.toCharArray())
+            answer+=diff[c-'A'];
+
+        int length=name.length();
+        int min=length-1;
+
+        for(int i=0;i<length;i++){
+            int next=i+1;
+            while(next<length && name.charAt(next)=='A'){
+                next++;
+            }                
+            min=Math.min(min,i+length-next+Math.min(i,length-next));
+        }
+
+        return answer+min;
+    }
+}
+박제헌―2021.01.23 10:15
+
+앞으로 쭉가는 경우는 처음 초기화로 하드코딩합니다. min = length. 
+
+그것보다 작은 경우를 찾는 알고리즘이 min = Math.min(min, i + length - next + Math.min(i, length - next)); 입니다. 
+
+​
+
+i+length-next​는 '바로옆의 a들을 제외한 다른 문자들의 길이 -1' 입니다. 
+
+예를 들면 AAABBBBBBBAA 는 i=2일 경우 next = 10, length는 12 이어서 4이됩니다. 
+
+즉, B를 건너지 않고 반대로 넘어가는 경우를 고려하는 것입니다. 
+
+​
+
+여기서 문제는 우리의 시작점은 인덱스 0인것에 있습니다. 
+
+우리는 i까지 갔다가 되돌아가거나 처음부터 ​뒤로가서 length-next까지 갔다가 다시 돌아오는 경우를 생각해야합니다. 
+
+앞의 예에서는 i=2 두칸앞으로 갔다가 돌아오느냐, 처음부터 뒤로가서 length-next = 12 - 10 = 2를 고려해야하는 것입니다. 
+
+이 경우에는 두개가 같은 값이지만 다를 수 있어서 Math.min으로 방향을 선택해주는 것입니다.
+
+​
+
+​
+
+​
+
+다른사람풀이2
+
+코딩테스트 / 연습 탐욕법(Greedy) / 조이스틱 / 다른 사람의 풀이 / 이상헌
+
+class Solution {
+    public int solution(String name) {
+        JoyStick joy = new JoyStick(name);
+
+        return joy.getMovingCount();
+    }
+}
+
+class JoyStick {
+    private static char[] alphabet = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+                                    'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+                                    'U', 'V', 'W', 'X', 'Y', 'Z'};
+    private char[] name;
+    private boolean[] flag;
+    private String name2;
+    private int count;
+
+    public JoyStick(String name) {
+        this.name = new char[name.length()];
+        this.flag = new boolean[name.length()];
+        for(int i = 0; i < this.name.length; i++) this.name[i] = 'A';
+        this.name2 = name;
+        this.count = 0;
+    }
+
+    protected int getMovingCount() {
+        int cur = 0, rd = 0, ld = 0;
+
+        while(!String.valueOf(name).equals(name2)) {
+            if(name2.charAt(cur) != 'A' && name2.charAt(cur) <= 'N') {
+                name[cur] = upKey(name2.charAt(cur));
+                flag[cur] = true;
+            } else if(name2.charAt(cur) != 'A' && name2.charAt(cur) > 'N') {
+                name[cur] = downKey(name2.charAt(cur));
+                flag[cur] = true;
+            }
+
+            rd = getDistanceToRight(cur);
+            ld = getDistanceToLeft(cur);
+
+            if(!String.valueOf(name).equals(name2)) {
+                if(cur == 0) {
+                    if(rd <= ld && flag[cur+1] != true) cur = rightKey(cur);
+                    else if(ld <= rd && flag[name.length-1] != true) cur = leftKey(cur);
+                } else if(cur == name.length-1) {
+                    if(rd <= ld && flag[0] != true) cur = rightKey(cur);
+                    else if(ld <= rd && flag[cur-1] != true) cur = leftKey(cur);
+                } else {
+                    if(rd <= ld && flag[cur+1] != true) cur = rightKey(cur);
+                    else if(ld <= rd && flag[cur-1] != true) cur = leftKey(cur);
+                    else if(rd <= ld) cur = leftKey(cur);
+                    else cur = rightKey(cur);
+                }
+            }
+        }
+
+        return this.count;
+    }
+
+    private int getDistanceToLeft(int cur) {
+        int distance = 0, i = cur;
+
+        do {
+            if(i == 0) i = name2.length();
+            distance++;
+            i--;
+        } while(name2.charAt(i) == 'A');
+
+        return distance;
+    }
+
+    private int getDistanceToRight(int cur) {
+        int distance = 0, i = cur;
+
+        do {
+            if(i == name2.length()-1) i = -1;
+            distance++;
+            i++;
+        } while(name2.charAt(i) == 'A');
+
+        return distance;
+    }
+
+    private char upKey(char c) {
+        int index = 0;
+
+        for(int i = 0; i < alphabet.length; i++) {
+            if(c == alphabet[i]) {
+                index = i;
+                break;
+            }
+            count++;
+        }
+
+        return alphabet[index];
+    }
+
+    private char downKey(char c) {
+        int index = 0;
+
+        for(int i = 25; i >= 0; i--) {
+            count++;
+            if(c == alphabet[i]) {
+                index = i;
+                break;
+            }
+        }
+
+        return alphabet[index];
+    }
+
+    private int rightKey(int left) {
+        int cur = left;
+
+        if(cur == name.length-1) cur = 0;
+        else cur++;
+        count++;
+
+        return cur;
+    }
+
+    private int leftKey(int right) {
+        int cur = right;
+
+        if(cur == 0) cur = name.length-1;
+        else cur--;
+        count++;
+
+        return cur;
+    }
+}
+​
+
+​
+
+다른사람풀이3
+
+https://programmers.co.kr/questions/10979
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Solution {
+    public int solution(String name) {
+        int upDownSum = 0;
+        int leftRightSum = 0;   
+        List<Series> seriesGroup = getSeriesGroup(name);  // name 내 연속된 A 문자열 리스트
+
+        // up-down 조이스틱 집계
+        for (int i = 0; i < name.length(); i++){
+            char target = name.charAt(i);
+            upDownSum += Math.min((int)target - (int)'A', 
+                                (int)'Z' - (int)target + 1);
+        }
+
+        // A 밖에 없으면 바로 종료
+        if (upDownSum == 0){
+            return 0;
+        }
+
+        // left-right 조이스틱 집계
+        if (seriesGroup.isEmpty()) {
+            leftRightSum = name.length() - 1;  // 모두 A가 아니면 그냥 순방향 이동
+        } else {
+            leftRightSum = name.length() * 2;  // 적당히 큰 값으로 초기화
+            for (Series series : seriesGroup) {
+                leftRightSum = Math.min(leftRightSum, series.leftRight());
+            }
+        }
+
+        return upDownSum + leftRightSum;
+    }
+
+    private List<Series> getSeriesGroup(String str){
+        LinkedList<Series> seriesGroup = new LinkedList<>();
+
+        Pattern pattern = Pattern.compile("A+"); 
+        Matcher m = pattern.matcher(str);
+
+        while (m.find()) {           
+            seriesGroup.add(new Series(m.start(), m.end()-1, str));
+        }
+
+        // 마지막과 처음은 연결되었으므로 A가 이어지면 결합
+        if (seriesGroup.size() >= 2 
+                && seriesGroup.getLast().isConnectable(seriesGroup.getFirst())) {
+            Series connectedSeries = seriesGroup.removeLast().connect(seriesGroup.removeFirst());
+            seriesGroup.add(connectedSeries);
+        }
+
+        return seriesGroup;
+    }
+
+    private class Series {
+        private int startIdx;      // inclusive
+        private int endIdx;        // inclusive
+        private int parentLength;
+        private int length;
+
+        public Series(int startIdx, int endIdx, String parent) {
+            this.startIdx = startIdx;
+            this.endIdx = endIdx;
+            this.parentLength = parent.length();
+            this.length = (startIdx <= endIdx)
+                        ? (endIdx - startIdx + 1) 
+                        : ((endIdx + 1) + (this.parentLength - startIdx));
+        }
+
+        boolean isConnectable(Series next) {
+            return (this.endIdx == this.parentLength - 1) && (next.startIdx == 0);
+        }
+
+        public Series connect(Series next) {
+            this.endIdx = next.endIdx;
+            this.length += next.length;
+            return this;
+        }
+
+        public int leftRight() {
+            /*
+            * 해당 a series를 지나지 않을 때 좌우 이동의 최솟값 반환 
+            */
+            int leftRepeat = 0;   // T() 왼쪽 끝으로 이동하는 횟수
+            int rightRepeat = 0;  // T() 오른쪽 끝으로 이동하는 횟수
+            int contentLength = (parentLength - length - 1);
+
+            if (startIdx <= endIdx) {
+                leftRepeat = (endIdx == parentLength - 1) ? 0 : (parentLength - endIdx + 1);
+                rightRepeat = (startIdx == 0) ? 0 : (startIdx - 1);
+            } else {
+                leftRepeat = (parentLength - startIdx - 1);
+                rightRepeat = (endIdx + 1);
+            }
+
+            return contentLength + Math.min(length, Math.min(leftRepeat, rightRepeat));
+        }
+    } 
+}
+아래는 이 풀이를 푸신 분의 해설입니다.
+
+[ 최솟값을 구하는 풀이 ]
+
+저는 이 문제의 최솟값을 명확하게 풀고 싶기에 상황별로 따져보겠습니다. 
+
+상하 조작은 이미 최솟값이므로 논외로 합니다. 
+
+좌우 조작을 최소 횟수로 한다는 건 상하 조작이 없는 위치를 최소 횟수로 방문하는 겁니다.
+
+1. 'A'를 최소 횟수로 지나간다.
+
+2. 이미 지난 위치를 최소 횟수로 지나간다.
+
+​
+
+설명을 편하게 하기 위해 용어를 정하겠습니다. 
+
+반드시 지나야 하는 위치의 연속된 흐름을 T(), 지나지 않는 연속된 A 흐름을 A() 라고 합시다. 
+
+T()의 양끝은 무조건 'A'가 아니며, A()는 전부 'A' 입니다. 예를 들어 BAABAAA는 2가지 조합이 있습니다.
+
+​
+
+T(0-1-2-3), A(4-5-6) : BAAB, AAA ... (괄호 안 숫자들은 index)
+
+T(0-6-5-4-3), A(2-1) : BAAAB, AA
+
+​
+
+​
+
+[ 'A'를 최소 횟수로 지나는 T() 구하기 ]
+
+한 문자열에서도 여러 T()-A() 조합이 있으며 T()-A()는 1대1 대응입니다. 
+
+T()의 'A'는 어쩔 수 없이 지나야 하므로, A()의 길이가 가장 긴 조합을 찾아내야 합니다. 
+
+위의 예에서 T(0-1-2-3), A(4-5-6)을 선택해야 하는 것이죠. 
+
+​
+
+첫 인덱스와 끝 인덱스가 이어진 상황에서 최대 길이의 A의 연속된 흐름(Series)을 찾아내야 합니다. 
+
+그 다음 대응되는 T()을 최소 경로로 지나야겠지요.
+
+​
+
+​
+
+[ T()이 정해졌을 때 최솟값 구하기 ]
+
+T()의 모든 원소에 방문해야 하므로 T()의 양 끝점에 반드시 방문해야 합니다. 
+
+따라서 (0 index에서 한쪽 끝 지점까지 이동) -> (한쪽 끝에서 나머지 끝 지점으로 이동)해야 합니다. 
+
+(한쪽 끝->나머지 끝)은 고정값이므로 (0 index->한쪽 끝 지점)을 최소화해야 합니다.
+
+​
+
+BABAAAABBA: T(0-1-2-1-0-9-8-7) ... T(0-9-8-7-8-9-0-1-2-) 보다 짧음
+
+BAABAAAB : T(0-7-0-1-2-3) ... T(0-1-2-3-2-1-0-7) 보다 짧음
+
+​
+
+그런데 BBBBBBBABB는 어떤가요? 앞의 예시처럼 하면 최소 이동이 나오지 않습니다. 
+
+여기선 T(0-1-2-3-4-5-6-7-8-9) 또는 T(0-9-8-7-6-5-4-3-2-1)이 맞습니다. 
+
+왜냐하면 (0 index->한쪽 끝 지점)보다 A()의 길이가 작기 때문입니다. 
+
+끝지점으로 가지 않고 그냥 A() 건너서 부터 정방향 직진하는 게 이득인 거지요. 이때는 (A()의 길이) + (한쪽 끝->나머지 끝)이 최솟값이 됩니다.
+
+결국 좌우 이동의 최솟값은 Math.min(A()의 길이, T() 왼쪽 끝까지 이동 거리, T() 오른쪽 끝까지 이동 거리) + (한쪽 끝 -> 나머지 끝)이 됩니다.
+
+​
+
+​
+
+[ 코드 ]
+
+아래 과정을 구현해야 합니다.
+
+1. A로만 이뤄진 substring(Series) 목록을 구한다.
+
+2. 최대 길이의 A()에 대해 Math.min(A()의 길이, T() 왼쪽 끝까지 이동 거리, T() 오른쪽 끝까지 이동 거리) + (한쪽 끝 -> 나머지 끝)를 구한다.
+
+3. 동일한 길이의 A()가 있다면 각 결과 중의 최솟값을 찾는다.
+
+​
+
+편의상 모든 A()에 대해 값을 계산하고 최솟값을 찾았습니다. 어자피 길이가 짧은 A()는 최솟값이 되지 못하기 때문에 괜찮습니다. 
+
+그리고 하나의 for문으로 처리할 수 있지만 가독성을 위해 여러 for문으로 나눴습니다.
+
+이렇게 하면 정확성 테스트 11문제 모두 통과하기는 하는데...  
+
+테스트케이스로 "AAB"를 입력한 경우 
+
+왼쪽으로 이동해서 바로 마지막 위치로 가고(+1), 위로 한 번 조작해 B로 만들면(+1)
+
+정답이 2여야 하는데, 이 풀이는 1을 리턴한다.
+
+
+어쨌든! 문제에 접근할 때 이런식으로 생각해야 하는구나를 배울 수 있었다....후...개발자로의 길은 아직 멀구나~
+
+​
+
+​
+
+그리고! 이 문제의 분류가 탐욕법(Greedy)으로 되어 있는데, 처음 들어봐서 찾아봤다.
+
+탐욕법(Greedy, 탐욕 알고리즘)
+
+: 문제를 해결하는 과정에서 그 순간순간마다 최적이라고 생각되는 결정을 하는 방식으로 진행하여 최종 해답에 도달하는 문제 해결 방식
+
+​
+
+Greedy는 아래 조건이 성립되어야 잘 작동한다고 함.
+
+1. 탐욕스러운 선택 조건 (Greedy choice property): 앞의 선택이 이후의 선택에 영향을 주지 않는 조건
+
+2. 최적 부분 구조 조건(Optimal Substructure): 문제에 대한 최종 해결 방법이 부분 문제에 대해서도 또한 최적 문제 해결 방법이다는 조건
+
+​
+
+​
+
+* 참고사이트
+
+
+동적 계획법(Dynamic Programming)과 탐욕법(Greedy Algorithm)
+0x1X28uI-8A6oGM7.jpeg가장 빨리 가는 길을 찾고 싶다. 한 가지 방법은 출발하기 전, 가는 거리와 신호등, 교통 상황 등을 전부 계산해서 최적의 길을 찾는 것이다. 머리가 깨질 듯이 전부 확인하고 길을 확인하고 출발한다. 길을 찾는 과정에 시간이 걸리겠지만, 지금 나의 상황에서 최대한 빨리 약속장소에 도착 할 수 있는 경로를 알게 된다...
+
+velog.io
+
+
+ 
+[알고리즘 설명] 그리디 알고리즘 (탐욕법, Greedy method)
+안녕하세요~ 2주 정도 동적 계획법 (DP, dynamic programming) 응용문제들을 풀었더니 오랜만의 게시글이...
+
+m.blog.naver.com
