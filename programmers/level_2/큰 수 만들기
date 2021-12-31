@@ -1,0 +1,179 @@
+문제 설명
+
+어떤 숫자에서 k개의 수를 제거했을 때 얻을 수 있는 가장 큰 숫자를 구하려 합니다.
+
+예를 들어, 숫자 1924에서 수 두 개를 제거하면 [19, 12, 14, 92, 94, 24] 를 만들 수 있습니다. 이 중 가장 큰 숫자는 94 입니다.
+
+​
+
+문자열 형식으로 숫자 number와 제거할 수의 개수 k가 solution 함수의 매개변수로 주어집니다. 
+
+number에서 k 개의 수를 제거했을 때 만들 수 있는 수 중 가장 큰 숫자를 문자열 형태로 return 하도록 solution 함수를 완성하세요.
+
+​
+
+제한 조건
+
+- number는 1자리 이상, 1,000,000자리 이하인 숫자입니다.
+
+- k는 1 이상 number의 자릿수 미만인 자연수입니다.
+
+​
+
+입출력 예
+
+number
+
+k
+
+return
+
+"1924"
+
+2
+
+"94"
+
+"1231234"
+
+3
+
+"3234"
+
+"4177252841"
+
+4
+
+"775841"
+
+출처
+
+
+
+
+
+내 풀이 < 실패 >
+
+import java.util.*;
+class Solution {
+    Set<String> set = new HashSet<>();
+    String num;
+    
+    public String solution(String number, int k) {
+        num = number;
+        int[] arr = new int[number.length()];
+        boolean[] visited = new boolean[arr.length];
+        
+        for(int i=0; i<arr.length; i++){
+            arr[i] = i;
+        }
+        
+        comb(arr, visited, 0, k);
+        
+        String answer = "0";
+        for(String s : set){
+            if(s.compareTo(answer)>0){
+                answer = s;
+            }
+        }
+        
+        return answer;
+    }
+    
+    // 조합
+    public void comb(int[] arr, boolean[] visited, int depth, int r) {
+        if(r == 0) {
+            StringBuffer sb = new StringBuffer();
+            
+            for(int i = 0; i < arr.length; i++) {
+                if(!visited[i])
+                    sb.append(num.charAt(arr[i]));
+            }
+            set.add(sb.toString());
+            return;
+        }
+        if(depth == arr.length) {
+            return;
+        } else {
+            visited[depth] = true;
+            comb(arr, visited, depth + 1, r - 1);
+ 
+            visited[depth] = false;
+            comb(arr, visited, depth + 1, r);
+        }
+    }
+}
+지울 k가지의 조합을 구해서 지운 것들을 map에 넣고,
+
+그 중에 가장 큰 수를 리턴하려고 했는데... 아주 제대로 실패해버렸다~
+
+
+시간 초과랑 메모리 초과는 그러려니 하지만 10번의 런타임 에러는 그냥....할 말이 없다...후
+
+​
+
+​
+
+다른사람풀이1 < Stack >
+
+코딩테스트 연습 / 탐욕법(Greedy) / 큰 수 만들기 / 다른 사람의 풀이 / 김기준 , - , sabgilhun , 김준비 , RebirthLee 외 29 명
+
+import java.util.Stack;
+class Solution {
+    public String solution(String number, int k) {
+        char[] result = new char[number.length() - k];
+        Stack<Character> stack = new Stack<>();
+
+        for (int i=0; i<number.length(); i++) {
+            char c = number.charAt(i);
+            while (!stack.isEmpty() && stack.peek() < c && k-- > 0) {
+                stack.pop();
+            }
+            stack.push(c);
+        }
+        for (int i=0; i<result.length; i++) {
+            result[i] = stack.get(i);
+        }
+        return new String(result);
+    }
+}
+
+​
+
+​
+
+다른사람풀이2
+
+https://velog.io/@cchloe2311/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4-%ED%81%B0-%EC%88%98-%EB%A7%8C%EB%93%A4%EA%B8%B0
+
+class Solution {
+    public String solution(String number, int k) {
+        int pos = 0;
+
+        StringBuilder answer = new StringBuilder();
+
+        for (int left = (number.length() - k) - 1; left >= 0; left--) {
+            char bigNum = '0';
+
+            for (int i = pos; i < (number.length() - left); i++) {
+                if (bigNum < number.charAt(i)) {
+                    bigNum = number.charAt(i);
+                    pos = i + 1;
+                }
+                if (bigNum == '9') break;
+            }
+
+            answer.append(bigNum);
+        }
+
+        return answer.toString();
+    }
+}
+
+ 
+[알고리즘] 프로그래머스 > 큰 수 만들기
+오백만년만에 알고리즘 문제를 풀었다. 원래 leetcode를 이용할 계획이었지만, 랜덤으로 문제를 뽑았을 때 자꾸 medium 단계가 나와서 프로그래머스 간단한 문제로 방향을 바꿨다. 이 쉬운 2단계 문제를 푸는데도 한참 걸렸다. 열심히공부해야지ㅠㅠㅠㅠㅠㅠ첫번째 문제
+
+velog.io
+
+​
