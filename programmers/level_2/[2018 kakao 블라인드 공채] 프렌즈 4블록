@@ -1,0 +1,292 @@
+문제 설명
+
+블라인드 공채를 통과한 신입 사원 라이언은 신규 게임 개발 업무를 맡게 되었다. 
+
+이번에 출시할 게임 제목은 "프렌즈4블록".
+
+같은 모양의 카카오프렌즈 블록이 2×2 형태로 4개가 붙어있을 경우 사라지면서 점수를 얻는 게임이다.
+
+​
+
+
+만약 판이 위와 같이 주어질 경우, 라이언이 2×2로 배치된 7개 블록과 콘이 2×2로 배치된 4개 블록이 지워진다. 
+
+같은 블록은 여러 2×2에 포함될 수 있으며, 지워지는 조건에 만족하는 2×2 모양이 여러 개 있다면 한꺼번에 지워진다.
+
+
+블록이 지워진 후에 위에 있는 블록이 아래로 떨어져 빈 공간을 채우게 된다.
+
+
+만약 빈 공간을 채운 후에 다시 2×2 형태로 같은 모양의 블록이 모이면 다시 지워지고 떨어지고를 반복하게 된다.
+
+
+위 초기 배치를 문자로 표시하면 아래와 같다.
+
+TTTANT 
+
+RRFACC 
+
+RRRFCC 
+
+TRRRAA 
+
+TTMMMF 
+
+TMMTTJ 
+
+각 문자는 라이언(R), 무지(M), 어피치(A), 프로도(F), 네오(N), 튜브(T), 제이지(J), 콘(C)을 의미한다
+
+​
+
+입력으로 블록의 첫 배치가 주어졌을 때, 지워지는 블록은 모두 몇 개인지 판단하는 프로그램을 제작하라.
+
+​
+
+입력 형식
+
+- 입력으로 판의 높이 m, 폭 n과 판의 배치 정보 board가 들어온다.
+
+- 2 ≦ n, m ≦ 30
+
+- board는 길이 n인 문자열 m개의 배열로 주어진다. 블록을 나타내는 문자는 대문자 A에서 Z가 사용된다.
+
+​
+
+출력 형식
+
+입력으로 주어진 판 정보를 가지고 몇 개의 블록이 지워질지 출력하라.
+
+​
+
+입출력 예제
+
+m
+
+n
+
+board
+
+answer
+
+4
+
+5
+
+["CCBDE", "AAADE", "AAABF", "CCBBF"]
+
+14
+
+6
+
+6
+
+["TTTANT", "RRFACC", "RRRFCC", "TRRRAA", "TTMMMF", "TMMTTJ"]
+
+15
+
+예제에 대한 설명
+
+입출력 예제 1의 경우, 
+
+첫 번째에는 A 블록 6개가 지워지고, 두 번째에는 B 블록 4개와 C 블록 4개가 지워져, 모두 14개의 블록이 지워진다.
+
+​
+
+입출력 예제 2는 본문 설명에 있는 그림을 옮긴 것이다. 
+
+11개와 4개의 블록이 차례로 지워지며, 모두 15개의 블록이 지워진다.
+
+
+
+========================================================================
+
+카카오 문제 풀이  카카오 신입 공채 1차 코딩 테스트 문제 해설
+
+​
+
+게임 요구 사항을 구현해보는 문제입니다. 
+
+같은 모양의 카카오프렌즈 블록이 2×2 형태로 4개가 붙어있을 경우 사라지면서 점수를 얻는 게임인데요. 
+
+인접한 모든 블록이 사라지는 실제 게임들과 달리 계산을 쉽게 하기 위해 2×2로 제한하고, 사라진 블록 자리에는 새로운 블록이 채워지지 않습니다. 
+
+그럼에도 불구하고 인접한 블록을 모두 스캔해야 하는 문제라 짧지 않은 코드가 필요했을 것 같네요. 
+
+이번 시험에서 가장 긴 코드가 필요한 문제였습니다. 자바의 경우 무려 80라인이나 필요했네요. 
+
+​
+
+블록 매트릭스를 생성하여 스캔하고 제거해 나가는 작업을 반복하면서 더 이상 제거되지 않을 때 사라진 블록 자리의 수를 계산하면 됩니다.
+
+​
+
+이 문제의 정답률은 48.01%입니다.
+
+========================================================================
+
+
+내 풀이 < Set >
+
+import java.util.HashSet;
+import java.util.Iterator;
+class Solution {
+    public int solution(int m, int n, String[] board) {
+        int answer = 0;
+        char[][] boards = new char[m][n];
+        
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                boards[i][j] = board[i].charAt(j);
+            }
+        }
+        
+        while(true){
+            HashSet<String> set = new HashSet<>();
+            boolean find = false;
+
+            // 4블록 찾기
+            for(int i=0; i<m-1; i++){
+                for(int j=0; j<n-1; j++){
+                    if(boards[i][j]=='-') continue;
+
+                    char c = boards[i][j];
+                    if(boards[i][j+1]==c && boards[i+1][j]==c && boards[i+1][j+1]==c){
+                        int i2 = i+1;
+                        int j2 = j+1;
+                        
+                        set.add(i+","+j);
+                        set.add(i+","+j2);
+                        set.add(i2+","+j);
+                        set.add(i2+","+j2);
+                        
+                        find = true;
+                    }
+                }
+            }
+            
+            if(!find) break; // 지울 블록 없으면 반복문에서 나가기
+
+            // 해당되는 블록 지우기
+            Iterator<String> iter = set.iterator();
+            while(iter.hasNext()) {
+                String[] i_and_j = iter.next().split(",");
+                int i = Integer.parseInt(i_and_j[0]);
+                int j = Integer.parseInt(i_and_j[1]);
+
+                boards[i][j] = '-';
+                answer++;
+            }
+     
+            // 블록 떨어뜨리기
+            for(int j=0; j<n; j++){
+                for(int i=m-1; i>=0; i--){
+                    if(boards[i][j]=='-'){
+                        for(int h=i-1; h>=0; h--){
+                            if(boards[h][j] != '-'){
+                                boards[i][j] = boards[h][j];
+                                boards[h][j] = '-';
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return answer;
+    }
+}
+
+​
+
+​
+
+다른사람풀이
+
+https://velog.io/@hyeon930/%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4-%ED%94%84%EB%A0%8C%EC%A6%884%EB%B8%94%EB%A1%9D-Java
+
+import java.util.*;
+
+class Solution {
+	public int solution(int m, int n, String[] board) {
+		int answer = 0;
+		char[][] map = new char[m][n];
+		
+		for(int i = 0 ; i < m ; ++i) {
+			map[i] = board[i].toCharArray();
+		}
+		
+		while(true) {
+			int cnt = checkBlock(m, n, map);
+			if(cnt == 0) break;
+			answer += cnt;
+			
+			dropBlock(m, n, map);
+		}
+		
+		return answer;
+	}
+	
+	private void dropBlock(int m, int n, char[][] map) {
+		for(int c = 0 ; c < n ; ++c) {
+			for(int r = m - 1 ; r >= 0 ; --r) {
+				if(map[r][c] == '.') {
+					for(int nr = r - 1 ; nr >= 0 ; --nr) {
+						if(map[nr][c] != '.') {
+							map[r][c] = map[nr][c];
+							map[nr][c] = '.';
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private int checkBlock(int m, int n, char[][] map) {
+		int cnt = 0;
+		boolean[][] isChecked = new boolean[m][n];
+		
+		for(int i = 0 ; i < m - 1 ; ++i) {
+			for(int j = 0 ; j < n - 1 ; ++j) {
+				if(map[i][j] == '.') continue;
+				checkFour(map, isChecked, i, j);
+			}
+		}
+		
+		for(int i = 0 ; i < m ; ++i) {
+			for(int j = 0 ; j < n ; ++j) {
+				if(isChecked[i][j]) {
+					cnt++;
+					map[i][j] = '.';
+				}
+			}
+		}
+		
+		return cnt;
+	}
+
+	private void checkFour(char[][] map, boolean[][] isChecked, int i, int j) {
+		char block = map[i][j];
+		
+		for(int r = i ; r < i + 2 ; ++r) {
+			for(int c = j ; c < j + 2 ; ++c) {
+				if(map[r][c] != block) return;
+			}
+		}
+		
+		for(int r = i ; r < i + 2 ; ++r) {
+			for(int c = j ; c < j + 2 ; ++c) {
+				isChecked[r][c] = true;
+			}
+		}
+	}
+}
+
+​
+
+나는 지울 블럭의 정보를 담은 배열(boolean[][])을 처음부터 끝까지 돌면 시간이 오래 걸릴까봐 
+
+String에 "i,j"로 담고 그걸 ","로 나눠서 해당하는 (i,j)에만 접근하도록 풀이했는데..
+
+그냥 배열을 처음부터 끝까지 도는게 더 시간이 절약되는 거였군..
