@@ -1,0 +1,151 @@
+문제 설명
+
+무인도에 갇힌 사람들을 구명보트를 이용하여 구출하려고 합니다. 
+
+구명보트는 작아서 한 번에 최대 2명씩 밖에 탈 수 없고, 무게 제한도 있습니다.
+
+​
+
+예를 들어, 사람들의 몸무게가 [70kg, 50kg, 80kg, 50kg]이고 구명보트의 무게 제한이 100kg이라면 2번째 사람과 4번째 사람은 같이 탈 수 있지만 1번째 사람과 3번째 사람의 무게의 합은 150kg이므로 구명보트의 무게 제한을 초과하여 같이 탈 수 없습니다.
+
+​
+
+구명보트를 최대한 적게 사용하여 모든 사람을 구출하려고 합니다.
+
+​
+
+사람들의 몸무게를 담은 배열 people과 구명보트의 무게 제한 limit가 매개변수로 주어질 때, 
+
+모든 사람을 구출하기 위해 필요한 구명보트 개수의 최솟값을 return 하도록 solution 함수를 작성해주세요.
+
+​
+
+제한사항
+
+- 무인도에 갇힌 사람은 1명 이상 50,000명 이하입니다.
+
+- 각 사람의 몸무게는 40kg 이상 240kg 이하입니다.
+
+- 구명보트의 무게 제한은 40kg 이상 240kg 이하입니다.
+
+- 구명보트의 무게 제한은 항상 사람들의 몸무게 중 최댓값보다 크게 주어지므로 사람들을 구출할 수 없는 경우는 없습니다.
+
+​
+
+입출력 예
+
+people
+
+limit
+
+return
+
+[70, 50, 80, 50]
+
+100
+
+3
+
+[70, 80, 50]
+
+100
+
+3
+
+
+
+
+
+다른사람풀이1
+
+https://velog.io/@ajufresh/%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4-%EA%B5%AC%EB%AA%85%EB%B3%B4%ED%8A%B8-%EB%AC%B8%EC%A0%9C%ED%92%80%EC%9D%B4-Java
+
+import java.util.Arrays;
+class Solution {
+    public int solution(int[] people, int limit) {
+        int answer = 0;
+
+        Arrays.sort(people);
+
+        int min = 0;
+
+        for (int max = people.length - 1; min <= max; max--){
+            if (people[min] + people[max] <= limit) {
+                min++;
+            }
+            answer++;
+        }
+
+        return answer;
+    }
+}
+출처 사이트에서 설명하는 내용을 가져왔다.
+
+​
+
+[ 예제로 문제 파악하기 ]
+
+입력 : people [70, 50, 80, 50], limit 100
+
+최소한의 횟수로 옮기기 위해서는 가장 몸무게가 큰 사람 + 가장 몸무게가 작은 사람 조합이여야 한다.
+
+위 예제같은 경우에는
+
+1. 80 (최솟값인 50과 같이 가면 한계점인 100을 넘는다.)
+
+2. 70 (최솟값인 50과 같이 가면 한계점인 100을 넘는다.)
+
+3. 50 + 50
+
+순으로, 총 횟수인 3을 return한다.
+
+​
+
+입력 : people 50, 30, 20, 70, 10, limit 100
+
+70 + 10
+
+50 + 20
+
+30
+
+​
+
+​
+
+다른사람풀이2
+
+코딩테스트 연습 / 탐욕법(Greedy) / 구명보트 / 다른 사람의 풀이 / - , hestarium , 한슬 , KING_SJ , SeJin12 외 1 명
+
+import java.util.Arrays;
+
+class Solution {
+    public int solution(int[] people, int limit) {
+        Arrays.sort(people);
+        int i = 0, j = people.length - 1;
+        for (; i < j; --j) {
+            if (people[i] + people[j] <= limit)
+                ++i;
+        }
+        return people.length - i;
+    }
+}
+​
+
+?????? 최소한의 횟수로 옮기기 위해서는 (가장 몸무게가 큰 사람+가장 몸무게가 적은 사람) 조합이어야 한다구요???
+
+대체 다들 이걸 어떻게 아시는 거죠...후... 나는 그냥 몸무게 적은 사람 순으로 두명씩 묶으려고 했는데...실패...☆
+
+​
+
+​
+
+​
+
+* 참고 사이트
+
+[프로그래머스] 구명보트 문제풀이 (Java)
+
+velog.io
+
+​
