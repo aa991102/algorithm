@@ -1,0 +1,340 @@
+문제 설명
+
+다음 규칙을 지키는 문자열을 올바른 괄호 문자열이라고 정의합니다.
+
+- (), [], {} 는 모두 올바른 괄호 문자열입니다.
+
+- 만약 A가 올바른 괄호 문자열이라면, (A), [A], {A} 도 올바른 괄호 문자열입니다. 
+
+   예를 들어, [] 가 올바른 괄호 문자열이므로, ([]) 도 올바른 괄호 문자열입니다.
+
+- 만약 A, B가 올바른 괄호 문자열이라면, AB 도 올바른 괄호 문자열입니다. 
+
+   예를 들어, {} 와 ([]) 가 올바른 괄호 문자열이므로, {}([]) 도 올바른 괄호 문자열입니다.
+
+​
+
+대괄호, 중괄호, 그리고 소괄호로 이루어진 문자열 s가 매개변수로 주어집니다. 이 s를 왼쪽으로 x (0 ≤ x < (s의 길이)) 칸만큼 회전시켰을 때 s가 올바른 괄호 문자열이 되게 하는 x의 개수를 return 하도록 solution 함수를 완성해주세요.
+
+​
+
+제한사항
+
+- s의 길이는 1 이상 1,000 이하입니다.
+
+​
+
+입출력 예
+
+s
+
+result
+
+"[](){}"
+
+3
+
+"}]()[{"
+
+2
+
+"[)(]"
+
+0
+
+"}}}"
+
+0
+
+입출력 예 설명
+
+입출력 예 #1
+
+다음 표는 ​"[](){}" 를 회전시킨 모습을 나타낸 것입니다.
+
+x
+
+s를 왼쪽으로 x칸만큼 회전
+
+올바른 괄호 문자열?
+
+0
+
+"[](){}"
+
+O
+
+1
+
+"](){}["
+
+X
+
+2
+
+"(){}[]"
+
+O
+
+3
+
+"){}[]("
+
+X
+
+4
+
+"{}[]()"
+
+O
+
+5
+
+"}[](){"
+
+X
+
+올바른 괄호 문자열이 되는 x가 3개이므로, 3을 return 해야 합니다.
+
+​
+
+입출력 예 #2
+
+다음 표는 "}]()[{" 를 회전시킨 모습을 나타낸 것입니다.
+
+x
+
+s를 왼쪽으로 x칸만큼 회전
+
+올바른 괄호 문자열?
+
+0
+
+"}]()[{"
+
+X
+
+1
+
+"]()[{}"
+
+X
+
+2
+
+"()[{}]"
+
+O
+
+3
+
+")[{}]("
+
+X
+
+4
+
+"[{}]()"
+
+O
+
+5
+
+"{}]()["
+
+X
+
+올바른 괄호 문자열이 되는 x가 2개이므로, 2를 return 해야 합니다.
+
+​
+
+입출력 예 #3
+
+s를 어떻게 회전하더라도 올바른 괄호 문자열을 만들 수 없으므로, 0을 return 해야 합니다.
+
+​
+
+입출력 예 #4
+
+s를 어떻게 회전하더라도 올바른 괄호 문자열을 만들 수 없으므로, 0을 return 해야 합니다.
+
+​
+
+※ 공지 - 2021년 4월 16일 테스트케이스가 추가되었습니다.
+
+
+
+
+
+
+내 풀이 < Queue, Stack >
+
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
+class Solution {
+    public int solution(String s) {
+        int answer = 0;
+        Queue<Character> queue = new LinkedList<>();
+        
+        for(int i=0; i<s.length(); i++){
+            queue.offer(s.charAt(i));
+        }
+        
+        for(int i=0; i<queue.size(); i++){
+            if(check(queue)) answer++;
+            
+            queue.offer(queue.poll()); // 왼쪽으로 1 회전
+        }
+        
+        return answer;
+    }
+    
+    // 올바른 괄호 문자열인지 체크
+    public boolean check(Queue<Character> queue){
+        boolean result = true;
+        Stack<Character> open = new Stack<>();
+        
+        for(int i=0; i<queue.size(); i++){
+            char c = queue.poll();
+            queue.offer(c);
+            
+            if(c=='(' || c=='{' || c=='['){
+                open.push(c);
+            }else{ 
+                if(!open.isEmpty()){
+                    char oc = open.pop();
+                    
+                    if(c==')'){
+                        if(oc!='(') result = false;
+                    }else if(c=='}'){
+                        if(oc!='{') result = false;
+                    }else if(c==']'){
+                        if(oc!='[') result = false;
+                    }
+                }else {
+                    result= false;
+                }
+            }
+        }
+        
+        if(open.size()>0) result = false;
+        
+        return result;
+    }
+}
+이번 문제는 기존에 풀었던 괄호 문제들과 달리 여러 종류의 괄호( '()','{}','[]' )가 나왔다. 
+
+그래서 Stack을 이용해서 풀었다!
+
+호호...근데 시간이 상당히 오래걸렸....;;;
+
+
+​
+
+​
+
+다른사람풀이1 < StringBuilder, Stack >
+
+코딩테스트 연습 / 월간 코드 챌린지 시즌2 / 괄호 회전하기 / 다른 사람의 풀이 / 홍희표
+
+import java.util.Stack;
+class Solution {
+    private final Stack<Character> stack = new Stack<>();
+
+    public int solution(String s) {
+        int answer = 0;
+        StringBuilder stringBuilder = new StringBuilder(s);
+
+        for (int i = 0; i < s.length(); i++) {
+            stringBuilder.append(stringBuilder.charAt(0));
+            stringBuilder.deleteCharAt(0);
+            if (correctParenthesis(stringBuilder.toString().toCharArray()))
+                answer++;
+        }
+        return answer;
+    }
+
+    private boolean correctParenthesis(char[] s) {
+        for (char c : s) {
+            if (!(check(c, '(', ')') && check(c, '[', ']') && check(c, '{', '}')))
+                return false;
+        }
+        return stack.isEmpty();
+    }
+
+    private boolean check(char c, char a, char b) {
+        if (c == a)
+            stack.push(a);
+        else if (c == b)
+            if (!stack.isEmpty() && stack.peek() == a) stack.pop(); else return false;
+        return true;
+    }
+}
+오호 이 분은 StringBuilder를 이용해서 회전시켰군!! 
+
+이게 내 풀이보다 시간이 훠얼씬 적게 든다.
+
+
+​
+
+​
+
+다른사람풀이2 < Stack >
+
+코딩테스트 연습 / 월간 코드 챌린지 시즌2 / 괄호 회전하기 / 다른 사람의 풀이 / kdl9405 , 박수철
+
+import java.util.Stack;
+class Solution {
+    public static int solution(String s) {
+        int answer = 0;
+
+        for(int i = 0; i<s.length(); i++){
+            String test = s.substring(i, s.length())+s.substring(0, i);
+
+            if (check(test)) {
+                answer++;
+            }
+        }
+
+        return answer;
+    }
+
+    static boolean check(String s) {
+
+        Stack<Character> stack = new Stack<>();
+
+        for (int i = 0; i < s.length(); i++) {
+
+            char t = s.charAt(i);
+
+            if (t == '{' || t == '[' || t == '(') {
+                stack.add(t);
+            } else if (!stack.isEmpty()) {
+                if (t == '}' && stack.peek() == '{') {
+                    stack.pop();
+                } else if (t == ']' && stack.peek() == '[') {
+                    stack.pop();
+                } else if (t == ')' && stack.peek() == '(') {
+                    stack.pop();
+                }
+            } else {
+                return false;
+            }
+
+        }
+
+        if (!stack.isEmpty()) {
+            return false;
+        }
+
+        return true;
+
+    }
+}
+이건 그냥 String을 substring해서 회전 처리!
+
+시간은 다른사람풀이1과 비슷하다.
+
+
+​
