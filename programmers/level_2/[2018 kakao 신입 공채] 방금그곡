@@ -1,0 +1,296 @@
+문제 설명
+
+라디오를 자주 듣는 네오는 라디오에서 방금 나왔던 음악이 무슨 음악인지 궁금해질 때가 많다. 
+
+그럴 때 네오는 다음 포털의 '방금그곡' 서비스를 이용하곤 한다. 
+
+방금그곡에서는 TV, 라디오 등에서 나온 음악에 관해 제목 등의 정보를 제공하는 서비스이다.
+
+​
+
+네오는 자신이 기억한 멜로디를 가지고 방금그곡을 이용해 음악을 찾는다. 
+
+그런데 라디오 방송에서는 한 음악을 반복해서 재생할 때도 있어서 네오가 기억하고 있는 멜로디는 음악 끝부분과 처음 부분이 이어서 재생된 멜로디일 수도 있다. 반대로, 한 음악을 중간에 끊을 경우 원본 음악에는 네오가 기억한 멜로디가 들어있다 해도 그 곡이 네오가 들은 곡이 아닐 수도 있다. 
+
+그렇기 때문에 네오는 기억한 멜로디를 재생 시간과 제공된 악보를 직접 보면서 비교하려고 한다. 
+
+​
+
+다음과 같은 가정을 할 때 네오가 찾으려는 음악의 제목을 구하여라.
+
+- 방금그곡 서비스에서는 음악 제목, 재생이 시작되고 끝난 시각, 악보를 제공한다.
+
+- 네오가 기억한 멜로디와 악보에 사용되는 음은 C, C#, D, D#, E, F, F#, G, G#, A, A#, B 12개이다.
+
+- 각 음은 1분에 1개씩 재생된다. 
+
+   음악은 반드시 처음부터 재생되며 음악 길이보다 재생된 시간이 길 때는 음악이 끊김 없이 처음부터 반복해서 재생된다. 
+
+   음악 길이보다 재생된 시간이 짧을 때는 처음부터 재생 시간만큼만 재생된다.
+
+- 음악이 00:00를 넘겨서까지 재생되는 일은 없다.
+
+- 조건이 일치하는 음악이 여러 개일 때에는 라디오에서 재생된 시간이 제일 긴 음악 제목을 반환한다. 
+
+   재생된 시간도 같을 경우 먼저 입력된 음악 제목을 반환한다.
+
+- 조건이 일치하는 음악이 없을 때에는 “(None)”을 반환한다.
+
+​
+
+입력 형식
+
+입력으로 네오가 기억한 멜로디를 담은 문자열 m과 방송된 곡의 정보를 담고 있는 배열 musicinfos가 주어진다.
+
+- m은 음 1개 이상 1439개 이하로 구성되어 있다.
+
+- musicinfos는 100개 이하의 곡 정보를 담고 있는 배열로, 
+
+   각각의 곡 정보는 음악이 시작한 시각, 끝난 시각, 음악 제목, 악보 정보가 ','로 구분된 문자열이다.
+
+    - 음악의 시작 시각과 끝난 시각은 24시간 HH:MM 형식이다.
+
+    - 음악 제목은 ',' 이외의 출력 가능한 문자로 표현된 길이 1 이상 64 이하의 문자열이다.
+
+    - 악보 정보는 음 1개 이상 1439개 이하로 구성되어 있다.
+
+​
+
+출력 형식
+
+조건과 일치하는 음악 제목을 출력한다.
+
+​
+
+입출력 예시
+
+m
+
+musicinfos
+
+answer
+
+"ABCDEFG"
+
+["12:00,12:14,HELLO,CDEFGAB", "13:00,13:05,WORLD,ABCDEF"]
+
+"HELLO"
+
+"CC#BCC#BCC#BCC#B"
+
+["03:00,03:30,FOO,CC#B", "04:00,04:08,BAR,CC#BCC#BCC#B"]
+
+"FOO"
+
+"ABC"
+
+["12:00,12:14,HELLO,C#DEFGAB", "13:00,13:05,WORLD,ABCDEF"]
+
+"WORLD"
+
+설명
+
+첫 번째 예시에서 HELLO는 길이가 7분이지만 12:00부터 12:14까지 재생되었으므로 
+
+실제로 CDEFGABCDEFGAB로 재생되었고, 이 중에 기억한 멜로디인 ABCDEFG가 들어있다.
+
+​
+
+세 번째 예시에서 HELLO는 C#DEFGABC#DEFGAB로, WORLD는 ABCDE로 재생되었다. 
+
+HELLO 안에 있는 ABC#은 기억한 멜로디인 ABC와 일치하지 않고, WORLD 안에 있는 ABC가 기억한 멜로디와 일치한다.
+
+
+
+=================================================================================
+
+카카오 문제 풀이  카카오 신입 공채 3차 코딩 테스트 문제 해설
+
+​
+
+부분 문자열 비교를 묻는 문제입니다. 하지만 멜로디의 각 음을 나타내는 글자가 한 글자일 수도 있고, 두 글자일 수도 있습니다. “ABC”라는 멜로디는 “ABCD”라는 악보에는 들어있지만, “ABC#”라는 악보에는 들어있지 않습니다. 
+
+C#이 하나의 음을 이루고 있기 때문이죠.
+
+​
+
+문자열 비교에서 이런 문제를 처리해야 할 일이 있습니다. 
+
+1차 코딩 테스트에서 설명했던 토큰화Tokenizing를 통해 “ABC#”을 [“A”, “B”, “C#”] 식의 배열로 변환한 후에 비교를 수행할 수도 있고요.
+
+아니면 두 글자로 된 “C#”, “D#”, “F#” 등을 악보에서 사용되지 않는 문자인 “c”, “d”, “e” 등으로 치환Substitution한 후에 문자열 비교 함수를 이용할 수도 있습니다.
+
+​
+
+이 문제의 정답률은 47.50%였습니다. Python 사용자들이 가장 잘 풀었습니다.
+
+=================================================================================
+
+내 풀이
+
+import java.util.ArrayList;
+class Solution {
+    public String solution(String m, String[] musicinfos) {
+        String answer = "(None)";
+        int[] times = new int[musicinfos.length];
+        String[] titles = new String[musicinfos.length];
+        String[] sheets = new String[musicinfos.length];
+        
+        for(int i=0; i<musicinfos.length; i++){
+            String[] musicinfo = musicinfos[i].split(",");
+            
+            // 재생시간 계산(musicinfo[1] - musicinfo[0])해서 times[i] 초기화
+            String[] start_time = musicinfo[0].split(":");
+            String[] end_time = musicinfo[1].split(":");
+            int start_hour = Integer.parseInt(start_time[0]);
+            int start_minute = Integer.parseInt(start_time[1]);
+            int end_hour = Integer.parseInt(end_time[0]);
+            int end_minute = Integer.parseInt(end_time[1]);
+            
+            if(end_minute < start_minute){
+                end_minute += 60;
+                end_hour -= 1;
+            }
+            if(end_hour<0) end_hour += 24;
+            times[i] = (end_hour - start_hour)*60 + (end_minute - start_minute);
+            
+            // 음악 제목 titles[i]에 초기화
+            titles[i] = musicinfo[2];
+            
+            // 재생된 악보 내용 sheets[i]에 초기화
+            ArrayList<String> list = new ArrayList<>();
+            
+            for(int j=0; j<musicinfo[3].length(); j++){
+                String temp = "" + musicinfo[3].charAt(j);
+                
+                if(j<musicinfo[3].length()-1 && musicinfo[3].charAt(j+1)=='#'){
+                    temp += '#';
+                    j++;
+                }
+                list.add(temp);
+            }
+            
+            StringBuilder sb = new StringBuilder();
+            int h = 0;
+            
+            for(int j=0; j<times[i]; j++){
+                sb.append(list.get(h++));
+                if(h==list.size()) h = 0;
+            }
+            
+            sheets[i] = sb.toString();
+        }
+        
+        int time_of_matched = 0; // 조건에 일치하는 음악의 재생 시간
+        
+        for(int i=musicinfos.length-1; i>=0; i--){
+            while(sheets[i].contains(m)){
+                // sheets[i]에서 일치하는 부분의 다음의 값이 '#'이면 건너뛰기
+                int j = sheets[i].indexOf(m)+m.length();
+                if(j<sheets[i].length() && sheets[i].charAt(j)=='#') {
+                    sheets[i] = sheets[i].substring(0, sheets[i].indexOf(m)) 
+                                + sheets[i].substring(j+1);
+                    continue;
+                }
+                
+                // 재생된 시간이 같을 경우 먼저 입력된 음악 제목 반환
+                if(times[i] >= time_of_matched){
+                    answer = titles[i];
+                    time_of_matched = times[i];
+                    break;
+                }else{
+                    sheets[i] = sheets[i].substring(0, sheets[i].indexOf(m)) 
+                                + sheets[i].substring(j);
+                    continue;
+                }
+            }
+        }
+        
+        return answer;
+    }
+}
+처음에는 재생된 악보를 구할 때
+
+재생시간을 바로 악보(musicinfo[3])의 길이로 나눠서 그 몫만큼 악보를 반복하고 나머지를 substring해서 붙이려고 했는데..
+
+그럼 #으로 인해 오류가 발생해서 ("CC#"의 길이는 3이지만, 재생시간은 2)
+
+결국 list를 이용해서 악보에 나온 음을 순서대로 넣고 재생된 시간만큼 그 요소를 꺼내서 StringBuilder에 append하기로 결정!
+
+​
+
+그런데도 계속 몇몇 테스트 케이스들에서 통과하지 못해서 질문하기 보면서 이유를 찾아봤는데, 내가 놓치고 있던 경우가 있었다.
+
+     입력값 : "CCB", ["03:00, 03:10, FOO, CCB#CCB",  "04:00, 04:08, BAR, ABC"] 
+
+     기댓값 : "FOO"
+
+    -> 원래 내가 마지막 for문 안에 while문이 아닌 if문으로 sheets[i].contains(m)를 검사했었는데,
+
+         그럼 위의 입력값에서 "FOO"의 악보를 볼 때 첫번째 "CCB" 다음에 "#"이 있어서 내부에 첫번째 if문에서 걸려서
+
+         아예 이 음악을 넘어가버렸다. 
+
+         그래서 while문으로 멜로디가 없을때까지 반복해서 돌고 
+
+          1) 뒤에 '#'이 붙거나, 2) 앞서 확인해서 멜로디와 일치했던 것의 재생시간보다 짧은 경우
+
+         이 두 가지 경우는 해당 재생된 악보(sheets[i])에서 발견한 멜로디 부분(뒤에 '#'이 붙은 경우는 이것도 포함)을 지워버렸다.
+
+ 
+
+
+근데 카카오 문제 해설을 보고 "C#"을 "c"로 치환할 수도 있겠구나...라는 깨달음을 얻고 갑니다....허허..
+
+​
+
+​
+
+다른사람풀이
+
+코딩테스트 연습 / 2018 KAKAO BLIND RECRUITMENT / [3차] 방금그곡 / 다른 사람의 풀이 / 탈퇴한 사용자
+
+class Solution {
+    public String solution(String m, String[] musicinfos) {
+        String answer = "(None)";
+        int time = 0;
+
+        m = edit(m);
+
+        for (int inx = 0; inx < musicinfos.length; inx++) {
+
+            String[] info = musicinfos[inx].split(",");
+
+            int start = (60 * Integer.parseInt(info[0].substring(0, 2)) + Integer.parseInt(info[0].substring(3)));
+            int end = (60 * Integer.parseInt(info[1].substring(0, 2)) + Integer.parseInt(info[1].substring(3)));
+            int t = end - start;
+
+            if (t > time) {
+                info[3] = edit(info[3]);
+                StringBuffer sb = new StringBuffer();
+                for (int jnx = 0; jnx < t; jnx++) {
+                    sb.append(info[3].charAt(jnx % (info[3].length())));
+                }
+                if (sb.toString().indexOf(m) >= 0) {
+                    answer = info[2];
+                    time = t;
+                }
+            }
+        }
+
+        return answer;
+    }
+
+    public String edit(String m) {
+
+        m = m.replaceAll("C#", "V");
+        m = m.replaceAll("D#", "W");
+        m = m.replaceAll("F#", "X");
+        m = m.replaceAll("G#", "Y");
+        m = m.replaceAll("A#", "Z");
+
+        return m;
+    }
+}
+호호 그리고 바로 이게 그! 치환한 코드! 하... 진짜 간단해 진다... 
+코드도 간결하고 실행시간도 짧고... 나도 꼭 이런 코드를 작성하는 개발자가 되어야지....
