@@ -1,0 +1,147 @@
+문제 설명
+
+자연수 n이 주어졌을 때, n의 다음 큰 숫자는 다음과 같이 정의 합니다.
+
+- 조건 1. n의 다음 큰 숫자는 n보다 큰 자연수 입니다.
+
+- 조건 2. n의 다음 큰 숫자와 n은 2진수로 변환했을 때 1의 갯수가 같습니다.
+
+- 조건 3. n의 다음 큰 숫자는 조건 1, 2를 만족하는 수 중 가장 작은 수 입니다.
+
+예를 들어서 78(1001110)의 다음 큰 숫자는 83(1010011)입니다.
+
+자연수 n이 매개변수로 주어질 때, n의 다음 큰 숫자를 return 하는 solution 함수를 완성해주세요.
+
+​
+
+제한 사항
+
+n은 1,000,000 이하의 자연수 입니다.
+
+​
+
+입출력 예
+
+n
+
+result
+
+78
+
+83
+
+15
+
+23
+
+입출력 예 설명
+
+입출력 예#1
+
+문제 예시와 같습니다.
+
+​
+
+입출력 예#2
+
+15(1111)의 다음 큰 숫자는 23(10111)입니다.
+
+
+
+
+
+내 풀이
+
+class Solution {
+    public int solution(int n) {
+        int answer = 0;
+        int one_cnt = 0;
+        String bs = Integer.toBinaryString(n);
+        
+        for(int i=0; i<bs.length(); i++) {
+            if(bs.charAt(i)=='1') one_cnt++;
+        }
+        
+        for(int i=n+1;;i++){
+            String temp_bs = Integer.toBinaryString(i);
+            int temp_one_cnt = 0;
+            
+            for(int j=0; j<temp_bs.length(); j++) {
+                if(temp_bs.charAt(j)=='1') temp_one_cnt++;
+            }
+            
+            if(temp_one_cnt == one_cnt){
+                answer = i;
+                break;
+            }
+        }
+        
+        return answer;
+    }
+}
+실행시간은 0.03 ~ 0.07ms
+
+​
+
+다른사람풀이1
+
+코딩테스트 연습 / 연습문제 / 다음 큰 숫자 / 다른 사람의 풀이 / - , -
+
+class Solution {
+    public int solution(int n) {
+        int a = Integer.bitCount(n);
+        int compare = n+1;
+
+        while(true) {
+            if(Integer.bitCount(compare)==a)
+                break;
+            compare++;
+        }
+
+      return compare;
+    }
+}
+0.01 ~0.03ms
+
+​
+
+[ 새로운 함수를 획득하였다! ] 
+
+Integer.bitCount(int i) : i를 binary로 변환한 후 1의 숫자를 반환
+
+​
+
+호호 이런 함수가 있었구먼~
+
+​
+
+​
+
+다른사람풀이2
+
+코딩테스트 연습 / 연습문제 / 다음 큰 숫자 / 다른 사람의 풀이 / - , - , 박현기
+
+class Solution {
+    public int solution(int n) {
+        int postPattern = n & -n;
+        int smallPattern = ((n ^ (n + postPattern)) / postPattern) >> 2;
+        return n + postPattern | smallPattern;
+    }
+}
+0.02 ~ 0.03ms
+
+​
+
+&: 둘 다 1일 경우 1로 변환
+
+|: 하나만 1이어도 1로 변환
+
+^: 두 수의 각 자리수가 다른경우 1로 변환
+
+>>: 오른쪽으로 n칸 밀기
+
+​
+
+비트 연산자는 알겠는데 코드 해석은 못하겠어요....후...미래의 나에게 보류...
+
+​
