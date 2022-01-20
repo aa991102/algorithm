@@ -1,0 +1,94 @@
+문제 설명
+
+두 수의 최소공배수(Least Common Multiple)란 입력된 두 수의 배수 중 공통이 되는 가장 작은 숫자를 의미합니다. 
+
+예를 들어 2와 7의 최소공배수는 14가 됩니다. 
+
+​
+
+정의를 확장해서, n개의 수의 최소공배수는 n 개의 수들의 배수 중 공통이 되는 가장 작은 숫자가 됩니다. 
+
+​
+
+n개의 숫자를 담은 배열 arr이 입력되었을 때 이 수들의 최소공배수를 반환하는 함수, solution을 완성해 주세요.
+
+​
+
+제한 사항
+
+- arr은 길이 1이상, 15이하인 배열입니다.
+
+- arr의 원소는 100 이하인 자연수입니다.
+
+​
+
+입출력 예
+
+arr
+
+result
+
+[2,6,8,14]
+
+168
+
+[1,2,3]
+
+6
+
+
+
+
+
+내 풀이
+
+import java.util.Stack;
+class Solution {
+    public int solution(int[] arr) {
+        if(arr.length==1) return arr[0];
+        
+        Stack<Integer> stack = new Stack<>();
+
+        for(int i=0; i<arr.length-1; i++){
+            int gcd = GCD(arr[i],arr[i+1]);
+            int lcm = arr[i] / gcd * arr[i+1] ;
+            arr[i] = lcm;
+            stack.push(lcm);
+        }
+        
+        while(stack.size()>=2){
+            int a = stack.pop();
+            int b = stack.pop();
+            stack.push(a/GCD(a,b)*b);
+        }
+        
+        return stack.pop();
+    }
+
+    public int GCD(int a, int b){
+        while(b>0){
+            int temp = a;
+            a = b;
+            b = temp%b;
+        }
+        return a;
+    }
+}
+오홍 첨에는 최소공배수를 구하는 부분에서 a*b/gcd 로 했는데 그랬더니 테스트 10번에서 오류가 났다!!
+
+그 이유를 찾아보니 a*b 한 값이 int 자료형의 범위를 초과하는 경우에 실패가 뜬다고...!
+
+항상 겪으면서 어찌 항상 까먹는지...^^...항상 새로워 짜릿해 아주...
+
+​
+
+0.15 ~ 0.21ms
+
+​
+
+* 참고 사이트
+
+ 
+Programmers ] Level 2 - N개의 최소공배수
+✍ 문제 해설 > 테스트 6번과 10번의 경우 arr에 담긴 원소의 곱한 값이 int 자료형 범위를 초과하면 실패로 뜹니다.  그것만 체크해주면 쉽게 풀 수 있는 문제입니다. 🌱 정답코드
+dkanxmstmdgml.tistory.com
