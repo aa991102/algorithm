@@ -1,0 +1,191 @@
+문제 설명
+
+n개의 노드가 있는 그래프가 있습니다. 각 노드는 1부터 n까지 번호가 적혀있습니다. 
+
+1번 노드에서 가장 멀리 떨어진 노드의 갯수를 구하려고 합니다. 
+
+가장 멀리 떨어진 노드란 최단경로로 이동했을 때 간선의 개수가 가장 많은 노드들을 의미합니다.
+
+​
+
+노드의 개수 n, 간선에 대한 정보가 담긴 2차원 배열 vertex가 매개변수로 주어질 때, 
+
+1번 노드로부터 가장 멀리 떨어진 노드가 몇 개인지를 return 하도록 solution 함수를 작성해주세요.
+
+​
+
+제한사항
+
+- 노드의 개수 n은 2 이상 20,000 이하입니다.
+
+- 간선은 양방향이며 총 1개 이상 50,000개 이하의 간선이 있습니다.
+
+- vertex 배열 각 행 [a, b]는 a번 노드와 b번 노드 사이에 간선이 있다는 의미입니다.
+
+​
+
+입출력 예
+
+n
+
+vertex
+
+return
+
+6
+
+[[3, 6], [4, 3], [3, 2], [1, 3], [1, 2], [2, 4], [5, 2]]
+
+3
+
+입출력 예 설명
+
+예제의 그래프를 표현하면 아래 그림과 같고, 1번 노드에서 가장 멀리 떨어진 노드는 4,5,6번 노드입니다.
+
+
+
+
+
+
+내 풀이 < 다익스트라 알고리즘 >
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.PriorityQueue;
+
+class Solution {
+    private static ArrayList<Edge>[] edgeList;
+    private static int[] distance;
+
+    public int solution(int n, int[][] edge) {
+        edgeList = new ArrayList[n + 1];
+        distance = new int[n + 1];
+        
+        Arrays.fill(distance, Integer.MAX_VALUE);
+        
+        for (int i = 1; i <= n; i++) {
+            edgeList[i] = new ArrayList<>();
+        }
+        
+        for (int i = 0; i < edge.length; i++) {
+            edgeList[edge[i][0]].add(new Edge(edge[i][1], 1));
+            edgeList[edge[i][1]].add(new Edge(edge[i][0], 1));
+        }
+        
+        distance[1] = 0;
+        dijkstra();
+        
+        int answer = 0;
+        int answer_distance = 1;
+        for(int i=2; i<distance.length; i++){
+            if(distance[i] > answer_distance){
+                answer_distance = distance[i];
+                answer = 1;
+            }else if(distance[i] == answer_distance){
+                answer++;
+            }
+        }
+        return answer;
+    }
+    
+    private static void dijkstra() {
+        PriorityQueue<Edge> queue = new PriorityQueue<>();
+        queue.add(new Edge(1, 0));
+        while (!queue.isEmpty()) {
+            Edge edge = queue.poll();
+            int vertex = edge.vertex;
+            int weight = edge.weight;
+            if (distance[vertex] < weight) {
+                continue;
+            }
+            for (int i = 0; i < edgeList[vertex].size(); i++) {
+                int vertex2 = edgeList[vertex].get(i).vertex;
+                int weight2 = edgeList[vertex].get(i).weight + weight;
+                if (distance[vertex2] > weight2) {
+                    distance[vertex2] = weight2;
+                    queue.add(new Edge(vertex2, weight2));
+                }
+            }
+        }
+    }
+
+    private static class Edge implements Comparable<Edge> {
+        int vertex;
+        int weight;
+
+        public Edge(int vertex, int weight) {
+            this.vertex = vertex;
+            this.weight = weight;
+        }
+
+        @Override
+        public int compareTo(Edge o) {
+            return weight - o.weight;
+        }
+    }
+}
+0.68 ~ 51.50ms
+
+전에 다익스트라 알고리즘으로 해결했던 코드 그대로 가져와서 사알짝만 고쳐서 풀었다!
+
+​
+
+​
+
+다른사람풀이 < 다익스트라 알고리즘 >
+
+코딩테스트 연습 / 그래프 / 가장 먼 노드 / 다른 사람의 풀이 / 김원호 , ailee
+
+import java.util.ArrayList;
+
+class Solution {
+    public int solution(int n, int[][] edge) {
+        ArrayList<Integer>[] path = new ArrayList[n];
+        ArrayList<Integer> bfs = new ArrayList<Integer>();
+        int answer = 0;
+        int[] dist = new int[n];
+        dist[0] = 1;
+        int max = 0;
+
+        for(int i = 0; i < edge.length; i++) {
+            int num1 = edge[i][0] - 1;
+            int num2 = edge[i][1] - 1;
+            if(path[num1] == null)
+                path[num1] = new ArrayList<Integer>();
+            if(path[num2] == null)
+                path[num2] = new ArrayList<Integer>();
+            path[num1].add(num2);
+            path[num2].add(num1);
+        }
+
+        bfs.add(0);
+        while(!bfs.isEmpty()) {
+            int idx = bfs.get(0);
+            bfs.remove(0);
+            while(!path[idx].isEmpty()) {
+                int num = path[idx].get(0);
+                path[idx].remove(0);
+                bfs.add(num);
+                if(dist[num] == 0) {
+                    dist[num] = dist[idx] + 1;
+                    max = dist[num];
+                }
+            }
+        }
+        for(int i = 0; i < n; i++) {
+            if(dist[i] == max)
+                answer++;
+        }
+
+        return answer;
+    }
+}
+0.15 ~ 303.81ms
+
+​
+
+오호...이 풀이는 코드는 간단한데 실행시간의 편차가 크다. 
+
+remove()를 하기때문에 해당하는 데이터가 많아지면 시간이 더 많이 걸리는걸까??
+
+​
