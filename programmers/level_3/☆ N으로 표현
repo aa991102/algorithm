@@ -1,0 +1,166 @@
+문제 설명
+
+아래와 같이 5와 사칙연산만으로 12를 표현할 수 있습니다.
+
+ 12 = 5 + 5 + (5 / 5) + (5 / 5)
+
+ 12 = 55 / 5 + 5 / 5
+
+ 12 = (55 + 5) / 5
+
+5를 사용한 횟수는 각각 6,5,4 입니다. 그리고 이중 가장 작은 경우는 4입니다.
+
+​
+
+이처럼 숫자 N과 number가 주어질 때, 
+
+N과 사칙연산만 사용해서 표현 할 수 있는 방법 중 N 사용횟수의 최솟값을 return 하도록 solution 함수를 작성하세요.
+
+​
+
+제한사항
+
+- N은 1 이상 9 이하입니다.
+
+- number는 1 이상 32,000 이하입니다.
+
+- 수식에는 괄호와 사칙연산만 가능하며 나누기 연산에서 나머지는 무시합니다.
+
+- 최솟값이 8보다 크면 -1을 return 합니다.
+
+​
+
+입출력 예
+
+N
+
+number
+
+return
+
+5
+
+12
+
+4
+
+2
+
+11
+
+3
+
+입출력 예 설명
+
+예제 1
+
+문제에 나온 예와 같습니다.
+
+​
+
+예제 2
+
+11 = 22 / 2와 같이 2를 3번만 사용하여 표현할 수 있습니다.
+
+
+
+
+
+다른사람풀이1
+
+코딩테스트 연습 / 동적계획법(Dynamic Programming) / N으로 표현 / 다른 사람의 풀이 / 김형민 , - , - , ahnzhx , SeungkeyMouse
+
+import java.util.HashSet;
+import java.util.Set;
+class Solution {
+    public int solution(int N, int number) {
+       int answer = -1;
+        Set<Integer>[] setArr = new Set[9];
+        int t = N;
+        for(int i = 1; i < 9; i++) {
+            setArr[i] = new HashSet<>();
+            setArr[i].add(t);
+            t = t * 10 + N;
+        }
+        for(int i = 1; i < 9; i++) {
+            for(int j = 1; j < i; j++) {
+                for(Integer a : setArr[j]) {
+                    for(Integer b : setArr[i - j]) {
+                        setArr[i].add(a + b);
+                        setArr[i].add(a - b);
+                        setArr[i].add(b - a);
+                        setArr[i].add(a * b);
+                        if(b != 0) {
+                            setArr[i].add(a / b);
+                        }
+                        if(a != 0) {
+                            setArr[i].add(b / a);
+                        }
+                    }
+                }
+            }
+        }
+        for(int i = 1; i < 9; i++) {
+            if(setArr[i].contains(number)) {
+                answer = i;
+                break;
+            }
+        }
+        return answer;
+    }
+}
+다시보자 이 풀이!!!!!!!!
+
+​
+
+다른사람풀이2
+
+https://velog.io/@jwkim/DFS-n-expression
+
+class Solution {
+    
+    private int n;
+    private int target;
+    private int answer = Integer.MAX_VALUE;
+
+    public int solution(int N, int number) {
+        n = N;
+        target = number;
+        dfs(0, 0);        
+        return answer == Integer.MAX_VALUE ? -1 : answer;
+    }
+
+    private void dfs(int count, int prev) {
+        if (count > 8) {
+            answer = -1;
+            return;
+        }
+
+        if (prev == target) {
+            answer = Math.min(answer, count);
+            return;
+        }
+
+        int tempN = n;
+        for (int i = 0; i < 8 - count; i++) {
+            int newCount = count + i + 1;
+            dfs(newCount, prev + tempN);
+            dfs(newCount, prev - tempN);
+            dfs(newCount, prev / tempN);
+            dfs(newCount, prev * tempN);
+
+            tempN = tempN * 10 + n;
+        }
+    }
+}
+이 풀이는 채점했을때 통과는 되지만... 찾아보니 실패하는 경우가 있었다.
+
+예를 들어...N: 5, number: 26의 경우,
+
+26 = (5*5) +(5/5) 이렇게 4를 리턴해야 하는데
+
+이 풀이에서는 5를 리턴한다.
+
+​
+
+근데 아직 왜 그런지 이유를 모른다!!!!!!!!! 꼭 다시 보자!!!!!!!!!!!!!!!!!!!!!!!
