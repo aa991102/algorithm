@@ -1,0 +1,300 @@
+문제 설명
+
+스트리밍 사이트에서 장르 별로 가장 많이 재생된 노래를 두 개씩 모아 베스트 앨범을 출시하려 합니다. 
+
+노래는 고유 번호로 구분하며, 노래를 수록하는 기준은 다음과 같습니다.
+
+ 1. 속한 노래가 많이 재생된 장르를 먼저 수록합니다.
+
+ 2. 장르 내에서 많이 재생된 노래를 먼저 수록합니다.
+
+ 3. 장르 내에서 재생 횟수가 같은 노래 중에서는 고유 번호가 낮은 노래를 먼저 수록합니다.
+
+​
+
+노래의 장르를 나타내는 문자열 배열 genres와 노래별 재생 횟수를 나타내는 정수 배열 plays가 주어질 때, 
+
+베스트 앨범에 들어갈 노래의 고유 번호를 순서대로 return 하도록 solution 함수를 완성하세요.
+
+​
+
+제한사항
+
+ - genres[i]는 고유번호가 i인 노래의 장르입니다.
+
+ - plays[i]는 고유번호가 i인 노래가 재생된 횟수입니다.
+
+ - genres와 plays의 길이는 같으며, 이는 1 이상 10,000 이하입니다.
+
+ - 장르 종류는 100개 미만입니다.
+
+ - 장르에 속한 곡이 하나라면, 하나의 곡만 선택합니다.
+
+ - 모든 장르는 재생된 횟수가 다릅니다.
+
+​
+
+입출력 예
+
+genres
+
+plays
+
+return
+
+["classic", "pop", "classic", "classic", "pop"]
+
+[500, 600, 150, 800, 2500]
+
+[4, 1, 3, 0]
+
+입출력 예 설명
+
+classic 장르는 1,450회 재생되었으며, classic 노래는 다음과 같습니다.
+
+ - 고유 번호 3: 800회 재생
+
+ - 고유 번호 0: 500회 재생
+
+ - 고유 번호 2: 150회 재생
+
+pop 장르는 3,100회 재생되었으며, pop 노래는 다음과 같습니다.
+
+ - 고유 번호 4: 2,500회 재생
+
+ - 고유 번호 1: 600회 재생
+
+따라서 pop 장르의 [4, 1]번 노래를 먼저, classic 장르의 [3, 0]번 노래를 그다음에 수록합니다.
+
+
+
+
+
+※ 주의할 점!!
+
+문제에 직접적으로 명시되진 않았지만
+
+입출력 예에서 classic 장르의 노래는 총 3곡이지만 결과를 보면 classic 장르에서는 두 곡(3,0)만 수록되었다.
+
+이를 통해 각 장르당 최대 2곡만 베스트 앨범(리턴할 배열)에 수록할 수 있다는 걸 알 수 있다.
+
+
+
+
+
+내 풀이
+
+import java.util.*;
+import java.util.Map.Entry;
+class Solution {
+    public int[] solution(String[] genres, int[] plays) {
+        HashMap<String,HashMap<Integer,Integer>> map1 = new HashMap<>();
+        HashMap<String,Integer> total_map = new HashMap<>();
+        
+        for(int i=0; i<genres.length; i++){
+            String genre = genres[i];
+            int play = plays[i];
+            
+            HashMap<Integer,Integer> map2;
+            
+            if(!map1.containsKey(genre)){
+                map2 = new HashMap<>();
+            }else{
+                map2 = map1.get(genre);
+            }
+            map2.put(i, play);
+            map1.put(genre, map2);
+            total_map.put(genre, total_map.getOrDefault(genre, 0) + play);
+        }
+    
+        
+		ArrayList<Entry<String,Integer>> entries = new ArrayList<Entry<String,Integer>>(total_map.entrySet());
+
+		// 비교함수 Comparator를 사용하여 내림 차순으로 정렬
+		Collections.sort(entries, new Comparator<Entry<String,Integer>>() {
+			public int compare(Entry<String,Integer> obj1, Entry<String, Integer> obj2) {
+				return obj2.getValue().compareTo(obj1.getValue());
+			}
+		});
+
+        ArrayList<Integer> answer_list = new ArrayList<>();
+        
+		for(Entry<String,Integer> entry : entries) {
+			String genre = entry.getKey();
+            
+            HashMap<Integer,Integer> map2 = map1.get(genre);
+            ArrayList<Entry<Integer,Integer>> entries2 = new ArrayList<Entry<Integer,Integer>>(map2.entrySet());
+
+            Collections.sort(entries2, new Comparator<Entry<Integer,Integer>>() {
+                public int compare(Entry<Integer,Integer> obj1, Entry<Integer, Integer> obj2) {
+                    return obj2.getValue().compareTo(obj1.getValue());
+                }
+            });
+            
+            int count = 0;
+            for(Entry<Integer,Integer> entry2 : entries2) {
+                answer_list.add(entry2.getKey());
+                if(++count == 2) break;
+            }
+		}
+        
+        int[] answer = new int[answer_list.size()];
+
+        for(int i=0; i<answer.length; i++) {
+            answer[i] = answer_list.get(i);
+        }
+        
+        return answer;
+    }
+}
+// 맵 정렬 참고 사이트: https://ponyozzang.tistory.com/404
+0.63 ~ 1.28ms
+
+​
+
+다른사람풀이1
+
+코딩테스트 연습 / 해시 / 베스트앨범 / 다른 사람의 풀이 / 한상우
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+class Solution {
+    public int[] solution(String[] genres, int[] plays) {
+
+        Map<String, Integer> sum = new HashMap<String, Integer>();
+        List<Genres> sum_rank = new ArrayList<Genres>();
+        Map<String, List<Music>> best = new HashMap<>();
+
+        List<Integer> result = new ArrayList<>();
+
+        for(int i=0; i<genres.length; i++) {
+            sum.put(genres[i], sum.getOrDefault(genres[i], 0) + plays[i]);
+
+            List<Music> list = best.getOrDefault(genres[i], new ArrayList<Music>()) ;
+            list.add(new Music(i, genres[i], plays[i]));
+            best.put(genres[i], list);
+
+        }
+
+        for(String s : sum.keySet()) {
+            sum_rank.add(new Genres(s, sum.get(s)));
+        }
+
+        Collections.sort(sum_rank);
+
+        for (int i = 0; i < sum_rank.size(); i++) {
+            int count=0;
+            List<Music> list =  best.get(sum_rank.get(i).value);
+            Collections.sort(list);
+            for (Music music : list) {
+                if(count ==2) {
+                    break;
+                }
+                result.add(music.id);
+                count++;
+            }
+        }
+
+        int[] answer = new int[result.size()];
+        for (int i = 0; i < result.size(); i++) {
+            answer[i] = result.get(i);
+        }
+
+        return answer;
+    }
+
+    class Music implements Comparable<Music>{
+
+        int id;
+        String genres;
+        int plays;
+
+        Music(int id, String genres, int plays) {
+            this.id = id;
+            this.genres = genres;
+            this.plays = plays;
+        }
+
+        @Override
+        public int compareTo(Music o) {
+            if(this.plays - o.plays < 0) {
+                return 1;
+            }else if(this.plays - o.plays == 0) {
+                return this.id - o.id;
+            }else {
+                return -1;
+            }
+        }
+    }
+
+    class Genres implements Comparable<Genres>{
+        String value;
+        int plays;
+        Genres(String value, int plays) {
+            this.value = value;
+            this.plays = plays;
+        }
+
+        @Override
+        public int compareTo(Genres o) {
+            return o.plays - this.plays ;
+        }
+    }
+}
+이 풀이는 따로 내부 클래스를 생성했다.
+0.72 ~ 1.11ms
+
+​
+
+다른사람풀이2 < Stream 활용 >
+
+코딩테스트 연습 / 해시 / 베스트앨범 / 다른 사람의 풀이 / - , 심재훈 , 호두씨
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+public class Solution {
+  public class Music implements Comparable<Music>{
+
+    private int played;
+    private int id;
+    private String genre;
+
+    public Music(String genre, int played, int id) {
+      this.genre = genre; 
+      this.played = played;
+      this.id = id;
+    }
+
+    @Override
+    public int compareTo(Music other) {
+      if(this.played == other.played) return this.id - other.id;
+      return other.played - this.played;
+    }
+
+    public String getGenre() {return genre;}
+  }
+
+  public int[] solution(String[] genres, int[] plays) {
+    return IntStream.range(0, genres.length)
+    .mapToObj(i -> new Music(genres[i], plays[i], i))
+    .collect(Collectors.groupingBy(Music::getGenre))
+    .entrySet().stream()
+    .sorted((a, b) -> sum(b.getValue()) - sum(a.getValue()))
+    .flatMap(x->x.getValue().stream().sorted().limit(2))
+    .mapToInt(x->x.id).toArray();
+  }
+
+  private int sum(List<Music> value) {
+    int answer = 0;
+    for (Music music : value) {
+      answer+=music.played;
+    }
+    return answer;
+  }
+}
+12.93 ~ 25.19ms
