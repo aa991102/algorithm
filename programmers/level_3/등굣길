@@ -1,0 +1,214 @@
+문제 설명
+
+계속되는 폭우로 일부 지역이 물에 잠겼습니다. 
+
+물에 잠기지 않은 지역을 통해 학교를 가려고 합니다. 
+
+집에서 학교까지 가는 길은 m x n 크기의 격자모양으로 나타낼 수 있습니다.
+
+​
+
+아래 그림은 m = 4, n = 3 인 경우입니다.
+
+
+가장 왼쪽 위, 즉 집이 있는 곳의 좌표는 (1, 1)로 나타내고 가장 오른쪽 아래, 즉 학교가 있는 곳의 좌표는 (m, n)으로 나타냅니다.
+
+​
+
+격자의 크기 m, n과 물이 잠긴 지역의 좌표를 담은 2차원 배열 puddles이 매개변수로 주어집니다. 
+
+오른쪽과 아래쪽으로만 움직여 집에서 학교까지 갈 수 있는 최단경로의 개수를 1,000,000,007로 나눈 나머지를 return 하도록 solution 함수를 작성해주세요.
+
+​
+
+제한사항
+
+ - 격자의 크기 m, n은 1 이상 100 이하인 자연수입니다.
+
+    - m과 n이 모두 1인 경우는 입력으로 주어지지 않습니다.
+
+ - 물에 잠긴 지역은 0개 이상 10개 이하입니다.
+
+ - 집과 학교가 물에 잠긴 경우는 입력으로 주어지지 않습니다.
+
+​
+
+입출력 예
+
+m
+
+n
+
+puddles
+
+return
+
+4
+
+3
+
+[[2, 2]]
+
+4
+
+입출력 예 설명
+
+
+
+
+
+
+
+※ 기억하자!! 나머지 공식
+
+  (A+B)%C = (A%C + B%C)%C
+
+
+
+
+
+
+내 풀이 < 효율성 실패 >
+
+class Solution {
+    int answer = 0;
+    int mm;
+    int nn;
+    
+    public int solution(int m, int n, int[][] puddles) {
+        int[][] map = new int[n][m];
+        boolean[][] visited = new boolean[n][m];
+        mm = m;
+        nn = n;
+        
+        for(int i=0; i<puddles.length; i++){
+            map[puddles[i][1]-1][puddles[i][0]-1] = 1;
+        }
+        
+        dfs(0, 0, map, visited);
+        
+        return answer;
+    }
+    
+    void dfs(int x, int y, int[][] map, boolean[][] visited) {
+        if(x == mm-1 && y == nn-1) {
+            answer = answer%1000000007 + 1;
+            return;
+        }
+        
+        int nx = x;
+        int ny = y;
+        
+        for(int i=0; i<2; i++){
+            if(i==0){ // 오른쪽으로 이동
+                nx++;
+            }else{ // 왼쪽으로 이동
+                nx--;
+                ny++;
+            }
+            
+            if(nx < mm && ny < nn && !visited[ny][nx] && map[ny][nx]==0){
+                visited[ny][nx] = true;
+                dfs(nx, ny, map, visited);
+                visited[ny][nx] = false;
+            }
+        }
+        return;
+    }
+}
+호호 dfs로 재귀함수를 써서 코드를 짜봤는데, 정확성 테스트는 통과하지만 효율성 테스트는 모두 실패했다^^;;
+
+​
+
+​
+
+다른사람풀이 < 동적계획법(Dynamic Programming) >​​
+
+https://velog.io/@ajufresh/%EB%93%B1%EA%B5%A3%EA%B8%B8
+
+public class Solution {
+  public int solution(int m, int n, int[][] puddles) {
+    int[][] street = new int[n][m];
+
+    // 웅덩이는 -1
+    for (int[] puddle : puddles)
+      street[puddle[1] - 1][puddle[0] - 1] = -1;
+
+    street[0][0] = 1;
+
+    for (int i = 0; i < n; i++) { // 시작점은 1로 저장
+      for (int j = 0; j < m; j++) {
+
+        if(street[i][j] == -1) { // 웅덩이면 0으로 바꾸고 continue
+          street[i][j] = 0;
+          continue;
+        }
+
+        if(i != 0)
+          // 숫자가 이 값을 초과할 수 있기 때문에 계산 과정에서 나머지 구하기
+          street[i][j] += street[i - 1][j] % 1000000007; 
+
+        if(j != 0)
+          street[i][j] += street[i][j - 1] % 1000000007; // 왼쪽
+      }
+    }
+
+    return street[n - 1][m - 1] % 1000000007;
+  }
+}
+​
+
+이 풀이를 푸신 분의 해설을 가져와봤다. ↓↓↓↓↓↓
+
+​
+
+입력 : m 4, n 4, puddles [[3,2], [2,4]]
+
+
+왼쪽과 오른쪽 길이가 각각 4이고, 웅덩이는 [3,2]와 [2,4]에 지정한다.
+
+위의 값과 왼쪽 값을 더한 값을 넣어준다.
+
+웅덩이 부분은 0으로 치고 더해준다.
+
+(1(위쪽) + 0(웅덩이) = 1)
+
+최종적으로 계산한 값인 7을 return한다.
+
+​
+
+▶ 알고리즘 풀이 순서
+
+1. m, n 크기의 이차원 배열을 만든다. (street[][])
+
+2. 웅덩이 배열(puddles[][]) 크기만큼 반복문을 돌며, 해당 street 배열의 위치의 값을 -1로 초기화한다.
+
+3. 시작점(0, 0)의 크기를 1로 초기화한다.
+
+4. 이중 반복문을 돈다.
+
+      - 첫 번째 반복문은 n까지(i), 두번째 반복문은 m까지(j)
+
+5. street[i][j]의 값이 -1이라면(웅덩이) 값을 0으로 바꿔주고 (나중에 계산을 위해) 4번으로 돌아간다.
+
+6. i의 값이 0이 아니라면 (맨 위가 아니라면) 위쪽 값을 street[i][j]에 더해준다.
+
+7. j의 값이 0이 아니라면 (맨 왼쪽이 아니라면) 왼쪽 값을 street[i][j]에 더해준다.
+
+8. 4번으로 돌아간다.
+
+9. street[m - 1][n - 1]을 리턴한다.
+
+      - m과 n은 크기를 의미하기 때문에 위치는 -1을 해주어야한다.
+
+​
+
+​
+
+ 
+[프로그래머스] 등굣길 문제풀이 (Java)
+https://programmers.co.kr/learn/courses/30/lessons/42898출발지 1,1에서부터 웅덩이 puddles를 피해서 도착지 m,n로 가는 최단 거리를 1000000007로 나눈 나머지를 구해야한다.ddddddd1, 2, 3
+
+velog.io
+
+​
