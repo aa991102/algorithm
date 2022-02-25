@@ -82,7 +82,6 @@ answer
 
 
 다른사람풀이
-
 https://hj-bank.tistory.com/entry/%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%A8%B8%EC%8A%A4-%EB%8B%A8%EC%B2%B4%EC%82%AC%EC%A7%84-%EC%B0%8D%EA%B8%B0-JAVA
 
 import java.util.HashMap;
@@ -173,45 +172,20 @@ class Solution {
         return true;
     }
 }
+
 풀이법
 
 1. 순열 
-
  * 특이사항 : position 배열을 8개 두고 각각 어피치, 콘, 프로도, 제이지, 무지, 네오, 라이언, 튜브로 다루었다. Index
-
  * 특이사항 : 하지만, 입력값은 문자로 들어오기 때문에 
-
  * 특이사항 : Hash를 사용해 각 문자열과 Index를 매핑해주었다.
-
  * 즉, 문자열 -> hash -> position의 Index -> position[index] ==> 실제 카카오 프렌즈가 서있는 위치
 
-​
-
 2. 각 조건에 맞지 않는거 가지치기
-
  * Char형을 int형으로 바꾸기 위해서는 int diff = data[i].charAt(4) - '0';
-
  * Hash에서 < Character, Integer > 로 선언 
-
  * 작은 따옴표 ( ' ') 는 Character 를 의미, 큰 따옴표는 ( " " ) String을 의미 한다.
-
  * 따라서, Hash에서 <String>으로 선언하고 받으면 형 변환 문제가 발생한다. 
-
-​
 
 3. 전역변수로 선언된 것은 매번 초기화 시켜줘야 한다.
 
-​
-
-
- 
-[프로그래머스] 단체사진 찍기 [JAVA]
-출처 : programmers.co.kr/learn/courses/30/lessons/1835 코딩테스트 연습 - 단체사진 찍기 단체사진 찍기 가을을 맞아 카카오프렌즈는 단체로 소풍을 떠났다. 즐거운 시간을 보내고 마지막에 단체사진을 찍기 위..
-
-hj-bank.tistory.com
-
-581.38ms
-
-​
-
-​
