@@ -40,4 +40,50 @@ n	      k	  result
 ===================================================================================================================================================
 내 풀이
 
+class Solution {
+    public int solution(int n, int k) {
+        int answer = 0;
+        String[] arr = changeNToK(n, k).split("0");
+        
+        for(int i=0; i<arr.length; i++) {
+            if (arr[i].equals("")) continue;
+            if (isPrime(arr[i])) answer++;
+        }
+        
+        return answer;
+    }
+
+    String changeNToK(int n, int k) {
+        StringBuilder str = new StringBuilder();
+        while(n > 0) {
+            str.insert(0, n%k);
+            n /= k;
+        }
+        return str.toString();
+    }
+    
+    boolean isPrime(String strNum) {
+        long num = Long.parseLong(strNum);
+        
+        if (num < 2) return false;
+        
+        for(long i = 2; i <= Math.sqrt(num); i++) {
+            if ( num%i == 0) {
+                return false;
+            }
+        }
+        return true;        
+    }
+}
+
+1. Long
+isPrime()에서
+strNum을 Integer.parseInt로 int형으로 변환했는데, 이 경우 테스트케이스 1, 11번에서 오류가 났다.
+최대 100만이라는 숫자를 N진법 변환하면 엄청난 길이의 숫자로 나열되고, int의 범위를 넘어서는 숫자가 생성되는 경우가 있기 때문이었다!
+그래서 long형으로 형변환~~
+
+2. StringBuilder
+changeNToK()에서
+String형으로 str의 타입을 지정하고 while문에서 str += n%k + answer; 했더니 시간이 8~20ms만큼 걸렸는데
+StringBuilder형으로 타입 변경하고 str.insert(0, n%k); 했더니 0.10 ~ 11ms로 시간이 매우 단축되었다 ^ㅁ^~
 ===================================================================================================================================================
