@@ -28,3 +28,91 @@
 
 따라서 최대 3명이 디딤돌을 모두 건널 수 있습니다.
 
+===================================================================================================================================================
+내 풀이 < 정확도 성공 / 효율성 실패 >
+
+import java.util.*;
+class Solution {
+    public int solution(int[] stones, int k) {
+        int answer = 0;
+        int len = stones.length;
+        StringBuilder builder = new StringBuilder();
+        ArrayList<Stone> list = new ArrayList<>();
+        StringBuilder findBuilder = new StringBuilder();
+        
+        for (int i = 0; i < stones.length; i++) {
+            list.add(new Stone(i, stones[i]));
+            builder.append('1');
+            if (i<k) findBuilder.append('0');
+        }
+
+        Collections.sort(list);
+        int removeCnt = 0;
+        String findStr = findBuilder.toString();
+        
+        for(int i=0; i<list.size(); i++) {
+            Stone stone = list.get(i);
+            int idx = stone.idx;
+            int cnt = stone.cnt - removeCnt;
+            
+            builder.setCharAt(idx, '0');
+            
+            answer += cnt;
+            removeCnt += cnt;
+            
+            if (builder.indexOf(findStr) > -1) break;
+        }
+
+        return answer;
+    }
+    
+    private static class Stone implements Comparable<Stone> {
+        int idx;
+        int cnt;
+
+        public Stone(int idx, int cnt) {
+            this.idx	= idx;
+            this.cnt	= cnt;
+        }
+        
+        @Override
+        public int compareTo(Stone stone) {
+            return cnt - stone.cnt;
+        }
+
+    }
+}
+
+ㅠㅠ 나름대로 효율성 생각한거긴 했는데..흙흙
+
+===================================================================================================================================================
+다른사람풀이 <이분탐색> https://moonsbeen.tistory.com/81
+
+class Solution {
+   public int solution(int[] stones, int k) {
+        int min = 0;
+        int max = Integer.MAX_VALUE;
+        int result = 0;
+        while(min <= max) {
+            int mid = (min + max) / 2;
+            if(check(mid, k, stones)) {
+                min = mid + 1;
+                result = mid;
+            } else {
+                max = mid - 1;
+            }
+        }
+        return result;
+    }
+    
+    public boolean check(int mid, int k, int[] stones) {
+        int count = 0;
+        for(int i = 0; i < stones.length; i++) {
+            if(stones[i] < mid) { //mid보다 작으면 mid가 건널 수 없다.
+                count++;
+                if(count >= k) return false;
+            } else count = 0;
+        }
+        return true;
+    }
+}
